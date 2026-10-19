@@ -1,26 +1,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
-
-const projects = [
-  {
-    number: "01",
-    category: "WEB DEVELOPMENT",
-    title: "Predictive Budget Allocation",
-    description:
-      "A dashboard concept for budget allocation, financial insights, and data-driven planning.",
-    tags: ["React", "Tailwind CSS", "Data"],
-    type: "dashboard",
-  },
-  {
-    number: "02",
-    category: "FRONTEND & UI",
-    title: "Interface Experiments",
-    description:
-      "Minimal interfaces exploring typography, layout, usability, and thoughtful visual details.",
-    tags: ["UI Design", "Frontend"],
-    type: "design",
-  },
-];
+import ThingsImBuilding from "./components/ThingsImBuilding";
+import AboutMe from "./components/AboutMe";
 
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -106,7 +87,7 @@ export function App() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         {/* Navigation */}
-        <header className="relative z-30 flex items-center justify-between border-b border-slate-200/60 py-5">
+        <header className={`sticky top-3 z-50 mx-auto flex items-center justify-between gap-3 rounded-full border border-white/70 bg-white/[0.48] px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_12px_34px_rgba(55,85,115,0.12),0_3px_10px_rgba(55,85,115,0.06)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300 sm:top-4 sm:px-5 ${isDarkMode ? "border-white/10 bg-slate-900/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_14px_36px_rgba(0,0,0,0.28)]" : ""}`}>
           <a href="#home" className="group flex items-center gap-3">
             <div className="size-10 overflow-hidden rounded-full border border-white bg-sky-100 shadow-sm ring-1 ring-slate-100">
               <img
@@ -126,7 +107,7 @@ export function App() {
             </div>
           </a>
 
-          <nav className="hidden items-center gap-7 md:flex">
+          <nav className="hidden items-center gap-5 lg:gap-7 md:flex">
             {[
               ["Work", "#projects"],
               ["Tools", "#tools"],
@@ -151,7 +132,7 @@ export function App() {
               aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
               aria-pressed={isDarkMode}
               title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-              className="inline-flex size-10 items-center justify-center rounded-full border border-white/80 bg-white/70 text-slate-700 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white"
+              className={`inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-white/80 bg-white/55 text-slate-700 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white sm:size-10 ${isDarkMode ? "border-white/15 bg-white/10 text-slate-100 hover:bg-white/15" : ""}`}
             >
               {isDarkMode ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-[18px]" aria-hidden="true">
@@ -166,7 +147,7 @@ export function App() {
             </button>
             <a
               href="#contact"
-              className="rounded-full border border-slate-200 bg-white/80 px-4 py-2.5 text-xs font-medium text-slate-700 transition hover:border-sky-200 hover:bg-white sm:text-sm"
+              className={`whitespace-nowrap rounded-full border border-white/80 bg-white/55 px-3 py-2.5 text-[11px] font-medium text-slate-700 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white sm:px-4 sm:text-sm ${isDarkMode ? "border-white/15 bg-white/10 text-slate-100 hover:bg-white/15" : ""}`}
             >
               Let's talk <span className="ml-1 text-sky-600">↗</span>
             </a>
@@ -180,7 +161,7 @@ export function App() {
             <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-sky-100 bg-white/80 px-4 py-2.5 shadow-[0_4px_18px_rgba(100,150,190,0.04)]">
               <span className="size-2 rounded-full bg-sky-500" />
               <span className="text-xs text-slate-500">
-                IT Student · Aspiring Frontend Developer
+                UI/UX Designer | Frontend Developer | Layout Artist
               </span>
             </div>
 
@@ -342,9 +323,7 @@ export function App() {
                 Tools & technologies<span className="text-sky-600">.</span>
               </h2>
             </div>
-            <p className="max-w-xs text-sm leading-6 text-slate-500">
-              The tools I use and explore while bringing ideas to life.
-            </p>
+            
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -357,10 +336,10 @@ export function App() {
             ].map((tool) => (
               <div
                 key={tool.name}
-                className="group flex min-h-[150px] flex-col items-center justify-center rounded-[24px] border border-white/70 bg-white/[0.34] px-4 py-5 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_14px_34px_rgba(72,104,132,0.10)] backdrop-blur-2xl backdrop-saturate-150 transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white/[0.48] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_20px_42px_rgba(72,104,132,0.16)]"
+                className="group flex min-h-[160px] flex-col items-center justify-center rounded-[24px] border border-white/75 bg-white/[0.22] px-4 py-5 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.82),inset_0_-1px_0_rgba(255,255,255,0.25),0_18px_42px_rgba(72,104,132,0.14)] backdrop-blur-2xl backdrop-saturate-150 transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white/[0.48] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_20px_42px_rgba(72,104,132,0.16)]"
               >
-                <div className="flex size-[58px] items-center justify-center rounded-[18px] border border-white/90 bg-white/75 shadow-[0_5px_16px_rgba(72,126,173,0.10)] transition duration-300 group-hover:scale-105">
-                  <img src={tool.icon} alt={`${tool.name} logo`} loading="lazy" className="size-8 object-contain" />
+                <div className="flex size-[68px] items-center justify-center rounded-[20px] border border-white/85 bg-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_22px_rgba(72,126,173,0.16)] backdrop-blur-2xl backdrop-saturate-150 transition duration-300 group-hover:scale-105">
+                  <img src={tool.icon} alt={`${tool.name} logo`} loading="lazy" className="size-10 object-contain" />
                 </div>
                 <p className="mt-4 text-sm font-semibold text-slate-800">{tool.name}</p>
                 <p className="mt-1 text-[11px] text-slate-400">{tool.note}</p>
@@ -379,149 +358,10 @@ export function App() {
         </section>
 
         {/* Projects */}
-        <section
-          id="projects"
-          className="scroll-mt-12 border-t border-slate-200/70 py-20 sm:py-24"
-        >
-          <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <SectionLabel>Selected work · 2026</SectionLabel>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
-                Things I'm building<span className="text-sky-600">.</span>
-              </h2>
-            </div>
-            <p className="max-w-xs text-sm leading-6 text-slate-500">
-              A collection of development projects and visual explorations.
-            </p>
-          </div>
+        <ThingsImBuilding />
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((project) => (
-              <article
-                key={project.number}
-                className="scroll-reveal group rounded-[28px] border border-white/75 bg-white/[0.48] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_12px_36px_rgba(76,110,140,0.08)] backdrop-blur-2xl backdrop-saturate-150 transition duration-300 hover:-translate-y-1 hover:border-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_22px_48px_rgba(76,110,140,0.14)] sm:p-6"
-              >
-                <div className="flex items-center justify-between px-1 pt-1">
-                  <SectionLabel>{project.category}</SectionLabel>
-                  <span className="text-xs text-slate-400">
-                    {project.number}
-                  </span>
-                </div>
-
-                <div className="my-5 flex h-52 items-center justify-center overflow-hidden rounded-[20px] bg-gradient-to-br from-sky-100 via-[#F8FBFF] to-blue-100 p-5">
-                  {project.type === "dashboard" ? (
-                    <div className="w-full max-w-sm rounded-xl border border-white bg-white/95 p-4 shadow-[0_8px_25px_rgba(100,130,160,0.08)] sm:p-5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-[10px] text-slate-400">
-                            BUDGET OVERVIEW
-                          </p>
-                          <p className="mt-1 text-xs font-semibold text-slate-700">
-                            Allocation summary
-                          </p>
-                        </div>
-                        <span className="rounded-lg bg-sky-50 px-2 py-1 text-[9px] text-sky-700">
-                          Preview
-                        </span>
-                      </div>
-
-                      <p className="mt-5 text-2xl font-semibold tracking-tight text-slate-800">
-                        Budget insights
-                      </p>
-                      <p className="mt-1 text-[10px] text-slate-400">
-                        Illustrative dashboard design
-                      </p>
-
-                      <div className="mt-5 flex h-12 items-end gap-2">
-                        {[38, 60, 46, 75, 57, 88, 66, 100, 70, 83, 53, 74].map(
-                          (height, index) => (
-                            <span
-                              key={index}
-                              className="flex-1 rounded-t-sm bg-sky-400/80"
-                              style={{ height: `${height}%` }}
-                            />
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex size-full flex-col items-center justify-center rounded-2xl border border-white/80 bg-gradient-to-br from-sky-200/70 via-white to-violet-100/80">
-                      <span className="text-7xl font-medium tracking-[-0.08em] text-sky-700/70">
-                        Aa
-                      </span>
-                      <span className="mt-3 text-[9px] tracking-[0.22em] text-slate-500">
-                        FORM FOLLOWS FEELING
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <h3 className="px-1 text-xl font-semibold tracking-tight text-slate-900">
-                  {project.title}
-                </h3>
-                <p className="mt-3 px-1 text-sm leading-7 text-slate-500">
-                  {project.description}
-                </p>
-
-                <div className="mt-5 flex flex-wrap gap-2 px-1 pb-1">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 text-[11px] text-slate-500"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* About */}
-        <section
-          id="about"
-          className="scroll-mt-12 border-t border-slate-200/70 py-20 sm:py-24"
-        >
-          <div className="scroll-reveal grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:gap-16">
-            <div>
-              <SectionLabel>About me</SectionLabel>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
-                The person behind the pixels.
-              </h2>
-            </div>
-
-            <div>
-              <p className="text-base leading-8 text-slate-600">
-                I'm an IT student interested in frontend development, clean
-                interfaces, and creative digital experiences. I like exploring
-                how technology and design work together to make digital
-                products easier and more enjoyable to use.
-              </p>
-              <p className="mt-4 text-sm leading-7 text-slate-500">
-                I'm continuously learning, building projects, and improving my
-                skills through experimentation and hands-on work.
-              </p>
-
-              <div className="mt-7 flex flex-wrap gap-2">
-                {[
-                  "React",
-                  "Tailwind CSS",
-                  "JavaScript",
-                  "UI Design",
-                  "Creative Art",
-                ].map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs text-slate-600"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* About Me component */}
+        <AboutMe />
 
         {/* Creative section */}
         <section id="art" className="scroll-mt-12 py-8 sm:py-12">
