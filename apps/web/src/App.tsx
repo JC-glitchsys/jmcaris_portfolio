@@ -1,19 +1,585 @@
-import { Button } from "@workspace/ui/components/button"
 
-export function App() {
+import { useState, type ReactNode } from "react";
+
+const projects = [
+  {
+    number: "01",
+    category: "WEB DEVELOPMENT",
+    title: "Predictive Budget Allocation",
+    description:
+      "A dashboard concept for budget allocation, financial insights, and data-driven planning.",
+    tags: ["React", "Tailwind CSS", "Data"],
+    type: "dashboard",
+  },
+  {
+    number: "02",
+    category: "FRONTEND & UI",
+    title: "Interface Experiments",
+    description:
+      "Minimal interfaces exploring typography, layout, usability, and thoughtful visual details.",
+    tags: ["UI Design", "Frontend"],
+    type: "design",
+  },
+];
+
+function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="text-muted-foreground font-mono text-xs">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
+      {children}
+    </p>
+  );
+}
+
+function GlassFloatingCard({
+  title,
+  subtitle,
+  icon,
+  position,
+}: {
+  title: string;
+  subtitle: string;
+  icon: string;
+  position: "frontend" | "creative";
+}) {
+  const isFrontend = position === "frontend";
+
+  return (
+    <div
+      className={`absolute z-20 flex items-center gap-3 rounded-2xl border border-white/90 bg-white/[0.42] p-3 shadow-[0_16px_38px_rgba(51,91,125,0.20),0_5px_14px_rgba(51,91,125,0.10)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.56] hover:shadow-[0_20px_44px_rgba(51,91,125,0.24)] ${
+        isFrontend
+          ? "right-0 top-24 sm:-right-1"
+          : "left-0 top-[38%] sm:left-[1%] sm:top-[39%]"
+      }`}
+    >
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/90 bg-white/[0.32] text-lg text-slate-700 shadow-[0_3px_10px_rgba(51,91,125,0.08)] backdrop-blur-xl">
+        {icon}
+      </span>
+
+      <div>
+        <p className="text-xs font-semibold text-slate-800">{title}</p>
+        <p className="mt-1 text-[10px] text-slate-600">{subtitle}</p>
       </div>
     </div>
-  )
+  );
 }
+
+export function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  return (
+    <main
+      id="home"
+      className={`portfolio-root relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-[#F1F8FF] to-[#DCEEFF] font-sans text-slate-800 selection:bg-sky-100 selection:text-sky-900 transition-colors duration-300 ${isDarkMode ? "portfolio-dark" : ""}`}
+    >
+      {/* Soft sky-blue glow + subtle technical grid */}
+      <div className={`pointer-events-none fixed inset-0 z-0 overflow-hidden ${isDarkMode ? "dark-background" : ""}`} aria-hidden="true">
+        <div className="absolute -right-40 top-10 size-[520px] rounded-full bg-sky-200/45 blur-[115px] dark:hidden" />
+        <div className="absolute -left-44 top-[420px] size-[440px] rounded-full bg-blue-100/65 blur-[110px] dark:hidden" />
+        <div className="absolute inset-y-0 right-0 hidden w-[56%] opacity-[0.22] md:block dark:hidden" style={{ backgroundImage: "linear-gradient(rgba(100,160,210,0.28) 1px, transparent 1px), linear-gradient(90deg, rgba(100,160,210,0.28) 1px, transparent 1px)", backgroundSize: "34px 34px", maskImage: "linear-gradient(to bottom, transparent, black 14%, black 76%, transparent)" }} />
+        <div className="absolute -right-28 top-[340px] size-[360px] rounded-full border border-white/60 bg-white/10 blur-[1px] dark:hidden" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+        {/* Navigation */}
+        <header className="relative z-30 flex items-center justify-between border-b border-slate-200/60 py-5">
+          <a href="#home" className="group flex items-center gap-3">
+            <div className="size-10 overflow-hidden rounded-full border border-white bg-sky-100 shadow-sm ring-1 ring-slate-100">
+              <img
+                src="/images/profile-brown.jpg"
+                alt="JM Caris"
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold tracking-tight text-slate-900">
+                jmcaris<span className="text-sky-600">.dev</span>
+              </p>
+              <p className="mt-0.5 text-[11px] text-slate-400">
+                Developer & Creative
+              </p>
+            </div>
+          </a>
+
+          <nav className="hidden items-center gap-7 md:flex">
+            {[
+              ["Work", "#projects"],
+              ["About", "#about"],
+              ["Creative", "#art"],
+              ["Contact", "#contact"],
+            ].map(([label, href]) => (
+              <a
+                key={label}
+                href={href}
+                className="text-[13px] text-slate-500 transition hover:text-sky-700"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsDarkMode((current) => !current)}
+              aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+              aria-pressed={isDarkMode}
+              title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+              className="inline-flex size-10 items-center justify-center rounded-full border border-white/80 bg-white/70 text-slate-700 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white"
+            >
+              {isDarkMode ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-[18px]" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-[18px]" aria-hidden="true">
+                  <path d="M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z" />
+                </svg>
+              )}
+            </button>
+            <a
+              href="#contact"
+              className="rounded-full border border-slate-200 bg-white/80 px-4 py-2.5 text-xs font-medium text-slate-700 transition hover:border-sky-200 hover:bg-white sm:text-sm"
+            >
+              Let's talk <span className="ml-1 text-sky-600">↗</span>
+            </a>
+          </div>
+        </header>
+
+        {/* Hero */}
+        <section className="grid items-center gap-12 py-16 md:min-h-[720px] md:grid-cols-[1fr_0.95fr] md:gap-8 md:py-20 lg:gap-14">
+          {/* Introduction */}
+          <div className="relative z-10 order-2 md:order-1">
+            <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-sky-100 bg-white/80 px-4 py-2.5 shadow-[0_4px_18px_rgba(100,150,190,0.04)]">
+              <span className="size-2 rounded-full bg-sky-500" />
+              <span className="text-xs text-slate-500">
+                IT Student · Aspiring Frontend Developer
+              </span>
+            </div>
+
+            <h1 className="max-w-xl  text-[clamp(5rem,7vw,5.8rem)] font-semibold leading-[0.99] tracking-[-0.035em] text-slate-900">
+              Jonaidah
+              <span className="mt-2 block text-sky-700">Caris.</span>
+              
+            </h1>
+
+            <p className="mt-6 max-w-md text-sm leading-7 text-slate-500 sm:text-base sm:leading-8">
+              Hi, I'm Jonaidah Caris. I enjoy creating thoughtful digital
+              experiences through frontend development, clean interfaces,
+              and visual design.
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <a
+                href="#projects"
+                className="inline-flex items-center gap-3 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-medium text-white shadow-[0_8px_22px_rgba(15,23,42,0.10)] transition hover:-translate-y-0.5 hover:bg-sky-800"
+              >
+                Explore my work <span>↗</span>
+              </a>
+
+              <a
+                href="#about"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-6 py-3.5 text-sm text-slate-600 transition hover:border-sky-200 hover:text-sky-800"
+              >
+                About me <span>↓</span>
+              </a>
+            </div>
+
+            <div className="mt-12 flex items-center gap-5 sm:gap-7">
+              {[
+                ["01", "DEVELOPMENT"],
+                ["02", "DESIGN"],
+                ["03", "ART & IDEAS"],
+              ].map(([number, label], index) => (
+                <div key={number} className="flex items-center gap-5 sm:gap-7">
+                  {index > 0 && <div className="h-8 w-px bg-slate-200" />}
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">
+                      {number}
+                    </p>
+                    <p className="mt-1 text-[10px] tracking-wide text-slate-400">
+                      {label}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Creative Space card */}
+          <div className="relative order-1 mx-auto flex min-h-[510px] w-full max-w-lg items-center justify-center md:order-2 md:min-h-[580px]">
+            <div className="pointer-events-none absolute left-1/2 top-1/2 size-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-200/50 blur-[75px]" />
+
+            <article className="relative z-10 w-[min(330px,76%)] rounded-[30px] border border-white/90 bg-white/[0.48] p-3.5 shadow-[0_28px_80px_rgba(72,126,173,0.20),0_8px_24px_rgba(72,126,173,0.08)] backdrop-blur-2xl transition duration-500 hover:-translate-y-1 hover:bg-white/[0.56] sm:w-[350px] sm:rounded-[34px] sm:p-4">
+             
+
+              <div className="relative overflow-hidden rounded-[18px] border border-white/70 bg-[#DDECF3]/90 shadow-inner">
+                <img
+                  src="/images/creative-blue.jpg"
+                  alt="JM Caris portrait"
+                  className="h-[300px] w-full object-cover object-top sm:h-[330px]"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-white/5" />
+              </div>
+
+              <div className="px-2.5 pt-5">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-semibold tracking-tight text-sky-600">
+                    Jonaidah Caris
+                  </h2>
+                  <span
+                    aria-label="Portfolio owner"
+                    className="flex size-[19px] items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-white"
+                  >
+                    ✓
+                  </span>
+                </div>
+
+                <p className="mt-2 text-[13px]  leading-5 text-slate-500">
+                  Frontend developer and creative enthusiast who loves clean
+                  interfaces and thoughtful design.
+                </p>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between gap-2 px-2 pb-2">
+                <div className="flex items-center gap-4 sm:gap-5">
+                  <div className="flex items-center gap-1.5 text-slate-500">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      className="size-[17px]"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="8" r="3.5" />
+                      <path d="M5 20c.4-4 3-6 7-6s6.6 2 7 6" />
+                    </svg>
+                    <span className="text-xs font-medium">Work</span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 text-slate-500">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      className="size-[17px]"
+                      aria-hidden="true"
+                    >
+                      <rect x="4" y="4" width="13" height="13" rx="2" />
+                      <path d="M8 20h10a2 2 0 0 0 2-2V8" />
+                      <path d="m7 13 3-3 2 2 3-4" />
+                    </svg>
+                    <span className="text-xs font-medium">Art</span>
+                  </div>
+                </div>
+
+                <a
+                  href="#projects"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full border border-sky-500 bg-sky-500 px-4 py-3 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(14,165,233,0.24)] transition hover:-translate-y-0.5 hover:border-sky-600 hover:bg-sky-600 hover:shadow-[0_10px_24px_rgba(14,165,233,0.30)]"
+                >
+                  Explore <span className="text-base leading-none">+</span>
+                </a>
+              </div>
+            </article>
+
+            {/* Floating glass cards with stronger shadows */}
+            <GlassFloatingCard
+              title="Frontend"
+              subtitle="Building for the web"
+              icon="⌘"
+              position="frontend"
+            />
+
+            <GlassFloatingCard
+              title="Creative Side"
+              subtitle="Art · Visual design"
+              icon="✳"
+              position="creative"
+            />
+          </div>
+        </section>
+
+        {/* Projects */}
+        <section
+          id="projects"
+          className="scroll-mt-12 border-t border-slate-200/70 py-20 sm:py-24"
+        >
+          <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <SectionLabel>Selected work · 2026</SectionLabel>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
+                Things I'm building<span className="text-sky-600">.</span>
+              </h2>
+            </div>
+            <p className="max-w-xs text-sm leading-6 text-slate-500">
+              A collection of development projects and visual explorations.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {projects.map((project) => (
+              <article
+                key={project.number}
+                className="group rounded-[28px] border border-slate-100 bg-white/80 p-4 shadow-[0_8px_32px_rgba(100,150,190,0.055)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(100,150,190,0.11)] sm:p-6"
+              >
+                <div className="flex items-center justify-between px-1 pt-1">
+                  <SectionLabel>{project.category}</SectionLabel>
+                  <span className="text-xs text-slate-400">
+                    {project.number}
+                  </span>
+                </div>
+
+                <div className="my-5 flex h-52 items-center justify-center overflow-hidden rounded-[20px] bg-gradient-to-br from-sky-100 via-[#F8FBFF] to-blue-100 p-5">
+                  {project.type === "dashboard" ? (
+                    <div className="w-full max-w-sm rounded-xl border border-white bg-white/95 p-4 shadow-[0_8px_25px_rgba(100,130,160,0.08)] sm:p-5">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] text-slate-400">
+                            BUDGET OVERVIEW
+                          </p>
+                          <p className="mt-1 text-xs font-semibold text-slate-700">
+                            Allocation summary
+                          </p>
+                        </div>
+                        <span className="rounded-lg bg-sky-50 px-2 py-1 text-[9px] text-sky-700">
+                          Preview
+                        </span>
+                      </div>
+
+                      <p className="mt-5 text-2xl font-semibold tracking-tight text-slate-800">
+                        Budget insights
+                      </p>
+                      <p className="mt-1 text-[10px] text-slate-400">
+                        Illustrative dashboard design
+                      </p>
+
+                      <div className="mt-5 flex h-12 items-end gap-2">
+                        {[38, 60, 46, 75, 57, 88, 66, 100, 70, 83, 53, 74].map(
+                          (height, index) => (
+                            <span
+                              key={index}
+                              className="flex-1 rounded-t-sm bg-sky-400/80"
+                              style={{ height: `${height}%` }}
+                            />
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex size-full flex-col items-center justify-center rounded-2xl border border-white/80 bg-gradient-to-br from-sky-200/70 via-white to-violet-100/80">
+                      <span className="text-7xl font-medium tracking-[-0.08em] text-sky-700/70">
+                        Aa
+                      </span>
+                      <span className="mt-3 text-[9px] tracking-[0.22em] text-slate-500">
+                        FORM FOLLOWS FEELING
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <h3 className="px-1 text-xl font-semibold tracking-tight text-slate-900">
+                  {project.title}
+                </h3>
+                <p className="mt-3 px-1 text-sm leading-7 text-slate-500">
+                  {project.description}
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-2 px-1 pb-1">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 text-[11px] text-slate-500"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* About */}
+        <section
+          id="about"
+          className="scroll-mt-12 border-t border-slate-200/70 py-20 sm:py-24"
+        >
+          <div className="grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:gap-16">
+            <div>
+              <SectionLabel>About me</SectionLabel>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
+                The person behind the pixels.
+              </h2>
+            </div>
+
+            <div>
+              <p className="text-base leading-8 text-slate-600">
+                I'm an IT student interested in frontend development, clean
+                interfaces, and creative digital experiences. I like exploring
+                how technology and design work together to make digital
+                products easier and more enjoyable to use.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-slate-500">
+                I'm continuously learning, building projects, and improving my
+                skills through experimentation and hands-on work.
+              </p>
+
+              <div className="mt-7 flex flex-wrap gap-2">
+                {[
+                  "React",
+                  "Tailwind CSS",
+                  "JavaScript",
+                  "UI Design",
+                  "Creative Art",
+                ].map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs text-slate-600"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Creative section */}
+        <section id="art" className="scroll-mt-12 py-8 sm:py-12">
+          <div className="grid gap-8 overflow-hidden rounded-[32px] border border-white/80 bg-white/[0.52] p-6 shadow-[0_18px_55px_rgba(72,126,173,0.12)] backdrop-blur-2xl sm:p-10 md:grid-cols-[1fr_0.85fr] md:items-center">
+            <div className="py-3">
+              <SectionLabel>Beyond the screen</SectionLabel>
+              <h2 className="mt-4 max-w-md text-3xl font-semibold leading-tight tracking-[-0.05em] text-slate-900 sm:text-4xl">
+                Not everything is
+                <span className="block text-sky-700">just code.</span>
+              </h2>
+              <p className="mt-5 max-w-md text-sm leading-7 text-slate-500">
+                My creative side is where I explore art, visual ideas,
+                publication layouts, and design details that inspire the way
+                I build digital experiences.
+              </p>
+              <a
+                href="#contact"
+                className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-sky-700 transition hover:text-sky-900"
+              >
+                Let's create something <span>↗</span>
+              </a>
+            </div>
+
+            <div className="relative flex min-h-[260px] items-center justify-center overflow-hidden rounded-[24px] bg-gradient-to-br from-sky-100 via-[#F9FCFF] to-blue-100">
+              <div className="absolute left-8 top-8 size-24 rounded-full border border-sky-200/80" />
+              <div className="absolute bottom-8 right-8 size-32 rounded-full border border-sky-200/80" />
+              <div className="relative flex size-36 rotate-[-7deg] items-center justify-center rounded-[30px] border border-white bg-white/65 shadow-[0_12px_35px_rgba(100,150,190,0.10)] backdrop-blur-xl">
+                <span className="text-7xl font-light text-sky-700">✳</span>
+              </div>
+              <div className="absolute bottom-5 left-5 rounded-full border border-white/90 bg-white/80 px-4 py-2 text-[10px] tracking-wide text-slate-500 backdrop-blur">
+                ART · IDEAS · EXPERIMENTS
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer
+          id="contact"
+          className="mt-16 border-t border-slate-200/70 py-10"
+        >
+          <div className="flex flex-col gap-7 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <a href="#home" className="text-lg font-semibold tracking-tight">
+                jmcaris<span className="text-sky-600">.dev</span>
+              </a>
+              <p className="mt-2 text-xs text-slate-400">
+                Developer by interest. Creative by nature.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-5 text-sm text-slate-500">
+              <a href="#projects" className="transition hover:text-sky-700">
+                Projects
+              </a>
+              <a href="#about" className="transition hover:text-sky-700">
+                About
+              </a>
+              <a href="#art" className="transition hover:text-sky-700">
+                Creative
+              </a>
+              <a
+                href="mailto:your-email@example.com"
+                className="transition hover:text-sky-700"
+              >
+                Email ↗
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col justify-between gap-2 border-t border-slate-100 pt-5 text-[11px] text-slate-400 sm:flex-row">
+            <p>© 2026 JM Caris. All rights reserved.</p>
+            <a href="#home" className="transition hover:text-sky-700">
+              Back to top ↑
+            </a>
+          </div>
+        </footer>
+      </div>
+      <style>{`
+
+/* Minimal dark mode: quiet charcoal-navy, no blue glow or decorative grid. */
+.portfolio-dark {
+  background: linear-gradient(135deg, #111318 0%, #171a21 55%, #1b2029 100%) !important;
+  color: #e7eaf0 !important;
+  color-scheme: dark;
+}
+.portfolio-dark .text-slate-900,
+.portfolio-dark .text-slate-800,
+.portfolio-dark .text-slate-700 { color: #eef0f4 !important; }
+.portfolio-dark .text-slate-600,
+.portfolio-dark .text-slate-500 { color: #b7bdc8 !important; }
+.portfolio-dark .text-slate-400 { color: #858d9b !important; }
+.portfolio-dark .border-slate-200,
+.portfolio-dark .border-slate-200\/60,
+.portfolio-dark .border-slate-200\/70,
+.portfolio-dark .border-slate-100 { border-color: rgba(210, 218, 230, 0.12) !important; }
+.portfolio-dark article:not(.portfolio-dark article article),
+.portfolio-dark section#art > div {
+  border-color: rgba(210, 218, 230, 0.14) !important;
+}
+.portfolio-dark article,
+.portfolio-dark section#art > div {
+  background-color: rgba(31, 35, 43, 0.88) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18) !important;
+}
+.portfolio-dark header a:not(:first-child),
+.portfolio-dark footer a { color: #c4cbd6; }
+.portfolio-dark header button,
+.portfolio-dark header > div > a,
+.portfolio-dark #about span,
+.portfolio-dark #projects article span.rounded-full,
+.portfolio-dark #contact a[href^="mailto"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(210, 218, 230, 0.14) !important;
+  color: #e5eefb !important;
+}
+.portfolio-dark .bg-white\/80,
+.portfolio-dark .bg-white\/75,
+.portfolio-dark .bg-white\/70,
+.portfolio-dark .bg-white\/\[0\.42\],
+.portfolio-dark .bg-white\/\[0\.32\],
+.portfolio-dark .bg-white\/95,
+.portfolio-dark .bg-white {
+  background-color: rgba(35, 39, 47, 0.9) !important;
+}
+.portfolio-dark .bg-slate-900 { background-color: #e5e7eb !important; color: #20242b !important; }
+.portfolio-dark .bg-slate-900 span { color: #20242b !important; }
+.portfolio-dark .bg-sky-50 { background-color: rgba(148, 163, 184, 0.12) !important; }
+.portfolio-dark .bg-sky-100\/60,
+.portfolio-dark .bg-sky-200\/50 { opacity: 0.10; }
+.portfolio-dark .shadow-sm { box-shadow: 0 8px 22px rgba(0,0,0,.2) !important; }
+`}</style>
+    </main>
+  );
+}
+
+export default App;
