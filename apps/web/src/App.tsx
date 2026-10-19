@@ -1,5 +1,5 @@
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 const projects = [
   {
@@ -45,7 +45,7 @@ function GlassFloatingCard({
 
   return (
     <div
-      className={`absolute z-20 flex items-center gap-3 rounded-2xl border border-white/90 bg-white/[0.42] p-3 shadow-[0_16px_38px_rgba(51,91,125,0.20),0_5px_14px_rgba(51,91,125,0.10)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.56] hover:shadow-[0_20px_44px_rgba(51,91,125,0.24)] ${
+      className={`absolute z-20 flex items-center gap-3 rounded-2xl border border-white/70 bg-white/[0.28] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_18px_42px_rgba(51,75,95,0.18),0_4px_12px_rgba(51,75,95,0.08)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.40] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_48px_rgba(51,75,95,0.22)] ${
         isFrontend
           ? "right-0 top-24 sm:-right-1"
           : "left-0 top-[38%] sm:left-[1%] sm:top-[39%]"
@@ -65,6 +65,31 @@ function GlassFloatingCard({
 
 export function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -12px 0px" },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <main
@@ -104,6 +129,7 @@ export function App() {
           <nav className="hidden items-center gap-7 md:flex">
             {[
               ["Work", "#projects"],
+              ["Tools", "#tools"],
               ["About", "#about"],
               ["Creative", "#art"],
               ["Contact", "#contact"],
@@ -150,7 +176,7 @@ export function App() {
         {/* Hero */}
         <section className="grid items-center gap-12 py-16 md:min-h-[720px] md:grid-cols-[1fr_0.95fr] md:gap-8 md:py-20 lg:gap-14">
           {/* Introduction */}
-          <div className="relative z-10 order-2 md:order-1">
+          <div className="scroll-reveal relative z-10 order-2 md:order-1">
             <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-sky-100 bg-white/80 px-4 py-2.5 shadow-[0_4px_18px_rgba(100,150,190,0.04)]">
               <span className="size-2 rounded-full bg-sky-500" />
               <span className="text-xs text-slate-500">
@@ -158,10 +184,12 @@ export function App() {
               </span>
             </div>
 
-            <h1 className="max-w-xl  text-[clamp(5rem,7vw,5.8rem)] font-semibold leading-[0.99] tracking-[-0.035em] text-slate-900">
-              Jonaidah
-              <span className="mt-2 block text-sky-700">Caris.</span>
-              
+            <h1 className="max-w-xl">
+              <img
+                src="/images/jcaris.png"
+                alt="Jonaidah Caris"
+                className="block h-auto w-full max-w-[620px] object-contain object-left"
+              />
             </h1>
 
             <p className="mt-6 max-w-md text-sm leading-7 text-slate-500 sm:text-base sm:leading-8">
@@ -173,7 +201,7 @@ export function App() {
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <a
                 href="#projects"
-                className="inline-flex items-center gap-3 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-medium text-white shadow-[0_8px_22px_rgba(15,23,42,0.10)] transition hover:-translate-y-0.5 hover:bg-sky-800"
+                className="inline-flex items-center gap-3 rounded-full border border-sky-600 bg-sky-600 px-6 py-3.5 text-sm font-medium text-white shadow-[0_8px_22px_rgba(100,116,139,0.16)] transition hover:-translate-y-0.5 hover:border-sky-700 hover:bg-sky-700"
               >
                 Explore my work <span>↗</span>
               </a>
@@ -208,10 +236,10 @@ export function App() {
           </div>
 
           {/* Creative Space card */}
-          <div className="relative order-1 mx-auto flex min-h-[510px] w-full max-w-lg items-center justify-center md:order-2 md:min-h-[580px]">
+          <div className="scroll-reveal relative order-1 mx-auto flex min-h-[510px] w-full max-w-lg items-center justify-center md:order-2 md:min-h-[580px]">
             <div className="pointer-events-none absolute left-1/2 top-1/2 size-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-200/50 blur-[75px]" />
 
-            <article className="relative z-10 w-[min(330px,76%)] rounded-[30px] border border-white/90 bg-white/[0.48] p-3.5 shadow-[0_28px_80px_rgba(72,126,173,0.20),0_8px_24px_rgba(72,126,173,0.08)] backdrop-blur-2xl transition duration-500 hover:-translate-y-1 hover:bg-white/[0.56] sm:w-[350px] sm:rounded-[34px] sm:p-4">
+            <article className="relative z-10 w-[min(330px,76%)] rounded-[30px] border border-white/75 bg-white/[0.30] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_30px_85px_rgba(72,104,132,0.20),0_8px_24px_rgba(72,104,132,0.08)] backdrop-blur-2xl backdrop-saturate-150 transition duration-500 hover:-translate-y-1 hover:bg-white/[0.40] sm:w-[350px] sm:rounded-[34px] sm:p-4">
              
 
               <div className="relative overflow-hidden rounded-[18px] border border-white/70 bg-[#DDECF3]/90 shadow-inner">
@@ -302,6 +330,54 @@ export function App() {
           </div>
         </section>
 
+        {/* Tech stack & tools */}
+        <section
+          id="tools"
+          className="scroll-mt-12 border-t border-slate-200/60 py-16 sm:py-20"
+        >
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <SectionLabel>My toolkit</SectionLabel>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
+                Tools & technologies<span className="text-sky-600">.</span>
+              </h2>
+            </div>
+            <p className="max-w-xs text-sm leading-6 text-slate-500">
+              The tools I use and explore while bringing ideas to life.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {[
+              { name: "React", icon: "https://cdn.simpleicons.org/react/61DAFB", note: "Frontend" },
+              { name: "Tailwind CSS", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4", note: "Styling" },
+              { name: "JavaScript", icon: "https://cdn.simpleicons.org/javascript/F7DF1E", note: "Language" },
+              { name: "Figma", icon: "https://cdn.simpleicons.org/figma/F24E1E", note: "UI / UX design" },
+              { name: "Jira", icon: "https://cdn.simpleicons.org/jira/0052CC", note: "Project tracking" },
+            ].map((tool) => (
+              <div
+                key={tool.name}
+                className="group flex min-h-[150px] flex-col items-center justify-center rounded-[24px] border border-white/70 bg-white/[0.34] px-4 py-5 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_14px_34px_rgba(72,104,132,0.10)] backdrop-blur-2xl backdrop-saturate-150 transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white/[0.48] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_20px_42px_rgba(72,104,132,0.16)]"
+              >
+                <div className="flex size-[58px] items-center justify-center rounded-[18px] border border-white/90 bg-white/75 shadow-[0_5px_16px_rgba(72,126,173,0.10)] transition duration-300 group-hover:scale-105">
+                  <img src={tool.icon} alt={`${tool.name} logo`} loading="lazy" className="size-8 object-contain" />
+                </div>
+                <p className="mt-4 text-sm font-semibold text-slate-800">{tool.name}</p>
+                <p className="mt-1 text-[11px] text-slate-400">{tool.note}</p>
+              </div>
+            ))}
+            <div className="group flex min-h-[150px] flex-col items-center justify-center rounded-[24px] border border-dashed border-sky-200/90 bg-sky-50/45 px-4 py-5 text-center transition duration-300 hover:-translate-y-1 hover:bg-sky-50/75">
+              <div className="flex size-[58px] items-center justify-center rounded-[18px] border border-white/90 bg-white/75 text-sky-600 shadow-[0_5px_16px_rgba(72,126,173,0.08)] transition duration-300 group-hover:rotate-90">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="size-7" aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                </svg>
+              </div>
+              <p className="mt-4 text-sm font-semibold text-slate-700">More soon</p>
+              <p className="mt-1 text-[11px] text-slate-400">Always learning</p>
+            </div>
+          </div>
+        </section>
+
         {/* Projects */}
         <section
           id="projects"
@@ -323,7 +399,7 @@ export function App() {
             {projects.map((project) => (
               <article
                 key={project.number}
-                className="group rounded-[28px] border border-slate-100 bg-white/80 p-4 shadow-[0_8px_32px_rgba(100,150,190,0.055)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(100,150,190,0.11)] sm:p-6"
+                className="scroll-reveal group rounded-[28px] border border-white/75 bg-white/[0.48] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_12px_36px_rgba(76,110,140,0.08)] backdrop-blur-2xl backdrop-saturate-150 transition duration-300 hover:-translate-y-1 hover:border-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_22px_48px_rgba(76,110,140,0.14)] sm:p-6"
               >
                 <div className="flex items-center justify-between px-1 pt-1">
                   <SectionLabel>{project.category}</SectionLabel>
@@ -407,7 +483,7 @@ export function App() {
           id="about"
           className="scroll-mt-12 border-t border-slate-200/70 py-20 sm:py-24"
         >
-          <div className="grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:gap-16">
+          <div className="scroll-reveal grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:gap-16">
             <div>
               <SectionLabel>About me</SectionLabel>
               <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
@@ -449,7 +525,7 @@ export function App() {
 
         {/* Creative section */}
         <section id="art" className="scroll-mt-12 py-8 sm:py-12">
-          <div className="grid gap-8 overflow-hidden rounded-[32px] border border-white/80 bg-white/[0.52] p-6 shadow-[0_18px_55px_rgba(72,126,173,0.12)] backdrop-blur-2xl sm:p-10 md:grid-cols-[1fr_0.85fr] md:items-center">
+          <div className="scroll-reveal grid gap-8 overflow-hidden rounded-[32px] border border-white/70 bg-white/[0.32] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_60px_rgba(72,104,132,0.12)] backdrop-blur-2xl backdrop-saturate-150 sm:p-10 md:grid-cols-[1fr_0.85fr] md:items-center">
             <div className="py-3">
               <SectionLabel>Beyond the screen</SectionLabel>
               <h2 className="mt-4 max-w-md text-3xl font-semibold leading-tight tracking-[-0.05em] text-slate-900 sm:text-4xl">
@@ -526,6 +602,63 @@ export function App() {
       </div>
       <style>{`
 
+/* Scroll reveal: visible fade + upward slide when each section enters view. */
+.scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 800ms ease-out, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+#projects article.scroll-reveal:nth-child(2) { transition-delay: 120ms; }
+#projects article.scroll-reveal:nth-child(3) { transition-delay: 220ms; }
+#projects article.scroll-reveal:nth-child(4) { transition-delay: 320ms; }
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
+/* Premium glass finish: smoky translucency, soft inner highlights, and layered depth. */
+.portfolio-root header {
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+.portfolio-root header button,
+.portfolio-root header > div > a {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 8px 24px rgba(63,91,113,.08);
+  backdrop-filter: blur(22px) saturate(155%);
+  -webkit-backdrop-filter: blur(22px) saturate(155%);
+}
+.portfolio-root article,
+.portfolio-root section#art > div,
+.portfolio-root #tools > div > div {
+  -webkit-backdrop-filter: blur(26px) saturate(155%);
+  backdrop-filter: blur(26px) saturate(155%);
+}
+.portfolio-root article:not(.portfolio-root article article)::before,
+.portfolio-root section#art > div::before,
+.portfolio-root #tools > div > div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(145deg, rgba(255,255,255,.22), transparent 38%, rgba(255,255,255,.04));
+  opacity: .75;
+}
+.portfolio-root article:not(.portfolio-root article article),
+.portfolio-root section#art > div,
+.portfolio-root #tools > div > div { position: relative; isolation: isolate; }
+
 /* Minimal dark mode: quiet charcoal-navy, no blue glow or decorative grid. */
 .portfolio-dark {
   background: linear-gradient(135deg, #111318 0%, #171a21 55%, #1b2029 100%) !important;
@@ -548,8 +681,11 @@ export function App() {
 }
 .portfolio-dark article,
 .portfolio-dark section#art > div {
-  background-color: rgba(31, 35, 43, 0.88) !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18) !important;
+  background-color: rgba(38, 43, 52, 0.62) !important;
+  border-color: rgba(255,255,255,0.13) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 18px 48px rgba(0,0,0,0.24) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(130%) !important;
+  backdrop-filter: blur(28px) saturate(130%) !important;
 }
 .portfolio-dark header a:not(:first-child),
 .portfolio-dark footer a { color: #c4cbd6; }
@@ -577,6 +713,17 @@ export function App() {
 .portfolio-dark .bg-sky-100\/60,
 .portfolio-dark .bg-sky-200\/50 { opacity: 0.10; }
 .portfolio-dark .shadow-sm { box-shadow: 0 8px 22px rgba(0,0,0,.2) !important; }
+.portfolio-dark #tools > div > div {
+  background-color: rgba(35, 39, 47, 0.78) !important;
+  border-color: rgba(210, 218, 230, 0.14) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16) !important;
+}
+.portfolio-dark #tools > div > div > div {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(210, 218, 230, 0.12) !important;
+}
+.portfolio-dark #tools > div > div p { color: #d8dde6; }
+.portfolio-dark #tools > div > div p:last-child { color: #858d9b; }
 `}</style>
     </main>
   );
