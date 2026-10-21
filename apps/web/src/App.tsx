@@ -1,15 +1,9 @@
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import ThingsImBuilding from "./components/ThingsImBuilding";
 import AboutMe from "./components/AboutMe";
+import Testimonials from "./components/Testimonials";
 
-function SectionLabel({ children }: { children: ReactNode }) {
-  return (
-    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-      {children}
-    </p>
-  );
-}
 
 function GlassFloatingCard({
   title,
@@ -113,6 +107,7 @@ export function App() {
               ["Tools", "#tools"],
               ["About", "#about"],
               ["Creative", "#art"],
+              ["Testimonials", "#testimonials"],
               ["Contact", "#contact"],
             ].map(([label, href]) => (
               <a
@@ -149,7 +144,7 @@ export function App() {
               href="#contact"
               className={`whitespace-nowrap rounded-full border border-white/80 bg-white/55 px-3 py-2.5 text-[11px] font-medium text-slate-700 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white sm:px-4 sm:text-sm ${isDarkMode ? "border-white/15 bg-white/10 text-slate-100 hover:bg-white/15" : ""}`}
             >
-              Let's talk <span className="ml-1 text-sky-600">↗</span>
+              Contact Me <span className="ml-1 text-sky-600">↗</span>
             </a>
           </div>
         </header>
@@ -298,13 +293,17 @@ export function App() {
           {/* Tech stack & tools */}
           <section
             id="tools"
-            className="scroll-mt-12 border-t border-slate-200/60 py-14 sm:py-16"
+            className="scroll-mt-12 py-14 sm:py-16"
           >
-            <div className="mb-7">
-              <h2 className="text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
-                Tools & <span className="text-sky-600">Technologies.</span>
+            <div className="mb-8">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
+                <span className="text-sm text-sky-600" aria-hidden="true">✳</span>
+                Tools & Technologies
+              </div>
+              <h2 className="text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl lg:text-6xl">
+                Tools I <span className="text-sky-600">Use.</span>
               </h2>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-4 text-base text-slate-600 sm:text-lg">
                 The tools I use to design, build, and test.
               </p>
             </div>
@@ -481,7 +480,7 @@ export function App() {
                     More soon
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
-                    Always learning
+                    Currently Exploring
                   </p>
                 </div>
               </div>
@@ -496,16 +495,21 @@ export function App() {
         {/* About Me component */}
         <AboutMe />
 
+        {/* Swipeable testimonials */}
+        <Testimonials />
+
         {/* Creative section */}
         <section id="art" className="scroll-mt-12 py-8 sm:py-12">
-          <div className="scroll-reveal grid gap-8 overflow-hidden rounded-[32px] border border-white/70 bg-white/[0.32] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_60px_rgba(72,104,132,0.12)] backdrop-blur-2xl backdrop-saturate-150 sm:p-10 md:grid-cols-[1fr_0.85fr] md:items-center">
+          <div className="scroll-reveal grid gap-8 overflow-hidden rounded-[28px] border border-white/70 bg-white/[0.32] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_60px_rgba(72,104,132,0.12)] backdrop-blur-2xl backdrop-saturate-150 sm:p-10 md:grid-cols-[1fr_0.85fr] md:items-center">
             <div className="py-3">
-             
-              <h2 className="mt-4 max-w-md text-3xl font-semibold leading-tight tracking-[-0.05em] text-slate-900 sm:text-4xl">
-                Not everything is
-                <span className="block text-sky-700">just code.</span>
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
+                <span className="text-sm text-sky-600" aria-hidden="true">✳</span>
+                Creative Side
+              </div>
+              <h2 className="max-w-md text-4xl font-semibold leading-tight tracking-[-0.045em] text-slate-900 sm:text-5xl lg:text-6xl">
+                Not everything is <span className="text-sky-600">just code.</span>
               </h2>
-              <p className="mt-5 max-w-md text-sm leading-7 text-slate-500">
+              <p className="mt-4 max-w-md text-base leading-7 text-slate-600 sm:text-lg">
                 My creative side is where I explore art, visual ideas,
                 publication layouts, and design details that inspire the way
                 I build digital experiences.
@@ -518,9 +522,7 @@ export function App() {
               </a>
             </div>
 
-            <div className="relative flex min-h-[260px] items-center justify-center overflow-hidden rounded-[24px] bg-gradient-to-br from-sky-100 via-[#F9FCFF] to-blue-100">
-              <div className="absolute left-8 top-8 size-24 rounded-full border border-sky-200/80" />
-              <div className="absolute bottom-8 right-8 size-32 rounded-full border border-sky-200/80" />
+            <div className="relative flex min-h-[260px] items-center justify-center overflow-hidden rounded-[20px] border border-white/70 bg-gradient-to-br from-sky-50 via-white/75 to-blue-50">
               <div className="relative flex size-36 rotate-[-7deg] items-center justify-center rounded-[30px] border border-white bg-white/65 shadow-[0_12px_35px_rgba(100,150,190,0.10)] backdrop-blur-xl">
                 <span className="text-7xl font-light text-sky-700">✳</span>
               </div>
@@ -532,52 +534,129 @@ export function App() {
 
           
         {/* Footer / Contact */}
-        <footer id="contact" className="mt-16 scroll-mt-24 border-t border-slate-200/70 pt-10 pb-16 sm:pt-12 sm:pb-20">
-          <div className="grid gap-8 py-2 sm:gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-16">
+        <footer
+          id="contact"
+          className="mt-16 scroll-mt-24 pt-10 pb-10 sm:pt-14 sm:pb-12"
+        >
+          <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
+            {/* Contact intro */}
             <div className="max-w-xl">
-              <span className="inline-flex items-center rounded-full border border-slate-200/80 bg-white/85 px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 shadow-sm sm:text-xs">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
+                <svg className="h-3.5 w-3.5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                  <path d="M4 5h16v14H4z" />
+                  <path d="m4 7 8 6 8-6" />
+                </svg>
                 Get in touch
-              </span>
-              <h2 className="mt-4 text-2xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-3xl">
-                Let’s make something meaningful.
+              </div>
+
+              <h2 className="text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl">
+                Let’s make something <span className="text-sky-600">meaningful.</span>
               </h2>
-              <p className="mt-3 max-w-lg text-sm leading-7 text-slate-500">
+
+              <p className="mt-4 max-w-lg text-base leading-7 text-slate-600 sm:text-lg">
                 Have a project, collaboration, or just want to say hello? I’d love to hear from you.
               </p>
-              <a href="https://github.com/JC-glytchsys" target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-slate-700 transition hover:text-sky-700">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.02 3.45 1.44.1-.72.4-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" /></svg>
+
+              <a
+                href="https://github.com/JC-glytchsys"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-slate-700 transition hover:text-sky-700"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.02 3.45 1.44.1-.72.4-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
+                </svg>
                 View GitHub profile <span aria-hidden="true">↗</span>
               </a>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              <a href="mailto:your-email@gmail.com" className="group flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700"><svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
-                <span><span className="block text-sm font-medium text-slate-800">Email / Gmail</span><span className="mt-1 block text-xs text-slate-500">Send me a message ↗</span></span>
+            {/* Contact links */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <a
+                href="mailto:your-email@gmail.com"
+                className="group flex items-center gap-3 rounded-2xl border border-white/80 bg-white/55 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:bg-white/80 hover:shadow-[0_12px_32px_rgba(56,189,248,0.09)]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-sky-100 bg-sky-50/80 text-sky-700 transition group-hover:bg-sky-100">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="m4 7 8 6 8-6" />
+                  </svg>
+                </span>
+                <span>
+                  <span className="block text-sm font-medium text-slate-800">Email / Gmail</span>
+                  <span className="mt-1 block text-xs text-slate-500">Send me a message ↗</span>
+                </span>
               </a>
-              <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="group flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700"><svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.2 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM3.5 9h3.4v11.5H3.5V9Zm5.5 0h3.3v1.6h.1a3.6 3.6 0 0 1 3.2-1.8c3.4 0 4 2.2 4 5.1v6.6h-3.4v-5.9c0-1.4 0-3.1-1.9-3.1s-2.1 1.5-2.1 3v6H9V9Z"/></svg></span>
-                <span><span className="block text-sm font-medium text-slate-800">LinkedIn</span><span className="mt-1 block text-xs text-slate-500">Professional profile ↗</span></span>
+
+              <a
+                href="https://www.linkedin.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-3 rounded-2xl border border-white/80 bg-white/55 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:bg-white/80 hover:shadow-[0_12px_32px_rgba(56,189,248,0.09)]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-sky-100 bg-sky-50/80 text-sky-700 transition group-hover:bg-sky-100">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M5.2 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM3.5 9h3.4v11.5H3.5V9Zm5.5 0h3.3v1.6h.1a3.6 3.6 0 0 1 3.2-1.8c3.4 0 4 2.2 4 5.1v6.6h-3.4v-5.9c0-1.4 0-3.1-1.9-3.1s-2.1 1.5-2.1 3v6H9V9Z" />
+                  </svg>
+                </span>
+                <span>
+                  <span className="block text-sm font-medium text-slate-800">LinkedIn</span>
+                  <span className="mt-1 block text-xs text-slate-500">Professional profile ↗</span>
+                </span>
               </a>
-              <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="group flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700"><svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></span>
-                <span><span className="block text-sm font-medium text-slate-800">Instagram</span><span className="mt-1 block text-xs text-slate-500">Social / creative work ↗</span></span>
+
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-3 rounded-2xl border border-white/80 bg-white/55 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:bg-white/80 hover:shadow-[0_12px_32px_rgba(56,189,248,0.09)]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-sky-100 bg-sky-50/80 text-sky-700 transition group-hover:bg-sky-100">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" />
+                  </svg>
+                </span>
+                <span>
+                  <span className="block text-sm font-medium text-slate-800">Instagram</span>
+                  <span className="mt-1 block text-xs text-slate-500">Social / creative work ↗</span>
+                </span>
               </a>
-              <a href="#home" className="group flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700"><svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg></span>
-                <span><span className="block text-sm font-medium text-slate-800">Back to top</span><span className="mt-1 block text-xs text-slate-500">Explore the portfolio ↑</span></span>
+
+              <a
+                href="#home"
+                className="group flex items-center gap-3 rounded-2xl border border-white/80 bg-white/55 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:bg-white/80 hover:shadow-[0_12px_32px_rgba(56,189,248,0.09)]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-sky-100 bg-sky-50/80 text-sky-700 transition group-hover:bg-sky-100">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                    <path d="M12 3v18M3 12h18" />
+                  </svg>
+                </span>
+                <span>
+                  <span className="block text-sm font-medium text-slate-800">Back to top</span>
+                  <span className="mt-1 block text-xs text-slate-500">Explore the portfolio ↑</span>
+                </span>
               </a>
             </div>
           </div>
 
-          <div className="mt-16 flex flex-col justify-between gap-4 border-t border-slate-200/60 px-1 pt-8 text-[11px] text-slate-400 sm:flex-row sm:items-center sm:gap-6">
-            <a href="#home" className="text-sm font-semibold tracking-tight text-slate-600 transition hover:text-sky-700">jmcaris<span className="text-sky-600">.dev</span></a>
+          {/* Footer bottom */}
+          <div className="mt-14 flex flex-col justify-between gap-4 border-t border-sky-100/70 px-1 pt-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:gap-6">
+            <a href="#home" className="text-sm font-semibold tracking-tight text-slate-600 transition hover:text-sky-700">
+              jmcaris<span className="text-sky-600">.dev</span>
+            </a>
             <p>© {new Date().getFullYear()} All rights reserved.</p>
-            <nav className="flex flex-wrap gap-4 text-xs"><a href="#projects" className="transition hover:text-sky-700">Projects</a><a href="#about" className="transition hover:text-sky-700">About</a><a href="#art" className="transition hover:text-sky-700">Creative</a></nav>
+            <nav className="flex flex-wrap gap-4 text-xs">
+              <a href="#projects" className="transition hover:text-sky-700">Projects</a>
+              <a href="#about" className="transition hover:text-sky-700">About</a>
+              <a href="#art" className="transition hover:text-sky-700">Creative</a>
+              <a href="#testimonials" className="transition hover:text-sky-700">Testimonials</a>
+            </nav>
           </div>
         </footer>
-      </div>
-      <style>{`
+
+            <style>{`
 
 /* Scroll reveal: visible fade + upward slide when each section enters view. */
 .scroll-reveal {
@@ -702,6 +781,7 @@ export function App() {
 .portfolio-dark #tools > div > div p { color: #d8dde6; }
 .portfolio-dark #tools > div > div p:last-child { color: #858d9b; }
 `}</style>
+      </div>
     </main>
   );
 }

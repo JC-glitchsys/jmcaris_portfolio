@@ -60,7 +60,7 @@ export default function AboutMe() {
             {/* About content */}
             <div className="min-w-0">
               <h2 className="text-3xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-4xl">
-                Hi, I'm Jonaidah
+                Hi, I'm Jonaidah Caris
                 <span className="text-sky-500">.</span>
               </h2>
 
