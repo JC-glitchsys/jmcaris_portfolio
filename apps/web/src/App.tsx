@@ -1,8 +1,10 @@
+import { useEffect, useState, type ReactNode } from "react";
+import { Code2, Palette, Sparkles, ArrowUpRight, ArrowDown, Plus, Check } from "lucide-react";
 
-import { useEffect, useState } from "react";
-import ThingsImBuilding from "./components/ThingsImBuilding";
-import AboutMe from "./components/AboutMe";
-import Testimonials from "./components/Testimonials";
+// Use these paths IF your files are inside src/components/sections/
+import ThingsImBuilding from "./components/sections/ThingsImBuilding";
+import AboutMe from "./components/sections/AboutMe";
+import Testimonials from "./components/sections/Testimonials";
 
 
 function GlassFloatingCard({
@@ -13,7 +15,7 @@ function GlassFloatingCard({
 }: {
   title: string;
   subtitle: string;
-  icon: string;
+  icon: ReactNode;
   position: "frontend" | "creative";
 }) {
   const isFrontend = position === "frontend";
@@ -144,7 +146,7 @@ export function App() {
               href="#contact"
               className={`whitespace-nowrap rounded-full border border-white/80 bg-white/55 px-3 py-2.5 text-[11px] font-medium text-slate-700 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white sm:px-4 sm:text-sm ${isDarkMode ? "border-white/15 bg-white/10 text-slate-100 hover:bg-white/15" : ""}`}
             >
-              Contact Me <span className="ml-1 text-sky-600">↗</span>
+              Contact Me <ArrowUpRight className="ml-1 size-4 text-sky-600" aria-hidden="true" />
             </a>
           </div>
         </header>
@@ -179,14 +181,14 @@ export function App() {
                 href="#projects"
                 className="inline-flex items-center gap-3 rounded-full border border-sky-600 bg-sky-600 px-6 py-3.5 text-sm font-medium text-white shadow-[0_8px_22px_rgba(100,116,139,0.16)] transition hover:-translate-y-0.5 hover:border-sky-700 hover:bg-sky-700"
               >
-                Explore my work <span>↗</span>
+                Explore my work <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>
 
               <a
                 href="#about"
                 className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-6 py-3.5 text-sm text-slate-600 transition hover:border-sky-200 hover:text-sky-800"
               >
-                About me <span>↓</span>
+                About me <ArrowDown className="size-4" aria-hidden="true" />
               </a>
             </div>
 
@@ -216,9 +218,9 @@ export function App() {
                   </h2>
                   <span
                     aria-label="Portfolio owner"
-                    className="flex size-[19px] items-center justify-center rounded-full bg-sky-500 text-[11px] font-bold text-white"
+                    className="flex size-[19px] items-center justify-center rounded-full bg-sky-500 text-white"
                   >
-                    ✓
+                    <Check size={12} strokeWidth={3} aria-hidden="true" />
                   </span>
                 </div>
 
@@ -266,7 +268,7 @@ export function App() {
                   href="#projects"
                   className="inline-flex shrink-0 items-center gap-2 rounded-full border border-sky-500 bg-sky-500 px-4 py-3 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(14,165,233,0.24)] transition hover:-translate-y-0.5 hover:border-sky-600 hover:bg-sky-600 hover:shadow-[0_10px_24px_rgba(14,165,233,0.30)]"
                 >
-                  Explore <span className="text-base leading-none">+</span>
+                  Explore <Plus size={16} aria-hidden="true" />
                 </a>
               </div>
             </article>
@@ -275,14 +277,14 @@ export function App() {
             <GlassFloatingCard
               title="Frontend"
               subtitle="Building for the web"
-              icon="⌘"
+              icon={<Code2 size={19} strokeWidth={1.8} aria-hidden="true" />}
               position="frontend"
             />
 
             <GlassFloatingCard
               title="Creative Side"
               subtitle="Art · Visual design"
-              icon="✳"
+              icon={<Palette size={19} strokeWidth={1.8} aria-hidden="true" />}
               position="creative"
             />
           </div>
@@ -297,7 +299,7 @@ export function App() {
           >
             <div className="mb-8">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
-                <span className="text-sm text-sky-600" aria-hidden="true">✳</span>
+                <Sparkles size={15} className="text-sky-600" aria-hidden="true" />
                 Tools & Technologies
               </div>
               <h2 className="text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl lg:text-6xl">
@@ -503,7 +505,7 @@ export function App() {
           <div className="scroll-reveal grid gap-8 overflow-hidden rounded-[28px] border border-white/70 bg-white/[0.32] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_60px_rgba(72,104,132,0.12)] backdrop-blur-2xl backdrop-saturate-150 sm:p-10 md:grid-cols-[1fr_0.85fr] md:items-center">
             <div className="py-3">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
-                <span className="text-sm text-sky-600" aria-hidden="true">✳</span>
+                <Sparkles size={15} className="text-sky-600" aria-hidden="true" />
                 Creative Side
               </div>
               <h2 className="max-w-md text-4xl font-semibold leading-tight tracking-[-0.045em] text-slate-900 sm:text-5xl lg:text-6xl">
@@ -518,13 +520,13 @@ export function App() {
                 href="#contact"
                 className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-sky-700 transition hover:text-sky-900"
               >
-                Let's create something <span>↗</span>
+                Let's create something <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>
             </div>
 
             <div className="relative flex min-h-[260px] items-center justify-center overflow-hidden rounded-[20px] border border-white/70 bg-gradient-to-br from-sky-50 via-white/75 to-blue-50">
               <div className="relative flex size-36 rotate-[-7deg] items-center justify-center rounded-[30px] border border-white bg-white/65 shadow-[0_12px_35px_rgba(100,150,190,0.10)] backdrop-blur-xl">
-                <span className="text-7xl font-light text-sky-700">✳</span>
+                <Sparkles size={68} strokeWidth={1.2} className="text-sky-700" aria-hidden="true" />
               </div>
               
             </div>
