@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { Code2, Palette, Sparkles, ArrowUpRight, ArrowDown, Plus, Check } from "lucide-react";
 
 // Use these paths IF your files are inside src/components/sections/
@@ -19,9 +20,14 @@ function GlassFloatingCard({
   position: "frontend" | "creative";
 }) {
   const isFrontend = position === "frontend";
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <div
+    <motion.div
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
       className={`absolute z-20 flex items-center gap-3 rounded-2xl border border-white/70 bg-white/[0.28] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_18px_42px_rgba(51,75,95,0.18),0_4px_12px_rgba(51,75,95,0.08)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.40] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_48px_rgba(51,75,95,0.22)] ${
         isFrontend
           ? "right-0 top-24 sm:-right-1"
@@ -36,7 +42,7 @@ function GlassFloatingCard({
         <p className="text-xs font-semibold text-slate-800">{title}</p>
         <p className="mt-1 text-[10px] text-slate-600">{subtitle}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -162,13 +168,18 @@ export function App() {
               </span>
             </div>
 
-            <h1 className="max-w-xl">
+            <motion.h1
+              className="max-w-xl"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
+            >
               <img
                 src="/images/jcaris.png"
                 alt="Jonaidah Caris"
                 className="block h-auto w-full max-w-[620px] object-contain object-left"
               />
-            </h1>
+            </motion.h1>
 
             <p className="mt-6 max-w-md text-sm leading-7 text-slate-500 sm:text-base sm:leading-8">
               Hi, I'm Jonaidah Caris. I enjoy creating thoughtful digital
