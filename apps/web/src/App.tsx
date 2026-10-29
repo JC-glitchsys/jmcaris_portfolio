@@ -48,6 +48,7 @@ function GlassFloatingCard({
 
 export function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
