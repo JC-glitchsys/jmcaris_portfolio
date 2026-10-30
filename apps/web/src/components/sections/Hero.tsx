@@ -21,11 +21,8 @@ export default function Hero() {
         transition={entranceTransition}
       >
         {/* Role label */}
-        <p className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium tracking-wide text-slate-600">
-          <span
-            aria-hidden="true"
-            className="size-2 rounded-full bg-sky-500"
-          />
+        <p className="mb-7 inline-flex flex-wrap items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-medium tracking-wide text-slate-600">
+          <span aria-hidden="true" className="size-2 rounded-full bg-sky-500" />
           UI/UX Designer
           <span className="text-slate-300">|</span>
           Frontend Developer
@@ -45,7 +42,7 @@ export default function Hero() {
         </h1>
 
         {/* Introduction text */}
-        <p className="mt-6 max-w-[460px] text-base leading-8 text-slate-600 sm:text-[17px]">
+        <p className="mt-6 max-w-[480px] text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
           Hi, I'm Jonaidah Caris. I enjoy creating thoughtful digital
           experiences through frontend development, clean interfaces,
           and visual design.
@@ -55,7 +52,7 @@ export default function Hero() {
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <a
             href="#projects"
-            className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-200 px-6 py-3.5 text-sm font-semibold text-[#343a40] transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-300"
+            className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-200 px-6 py-3.5 text-base font-semibold text-[#343a40] transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-300"
           >
             Explore my work
             <ArrowUpRight className="size-4" aria-hidden="true" />
@@ -63,7 +60,7 @@ export default function Hero() {
 
           <a
             href="#about"
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3.5 text-sm font-medium text-slate-600 transition-all duration-200 hover:border-sky-200 hover:text-slate-900"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3.5 text-base font-medium text-slate-600 transition-all duration-200 hover:border-sky-200 hover:text-slate-900"
           >
             About me
             <ArrowDown className="size-4" aria-hidden="true" />
@@ -97,20 +94,20 @@ export default function Hero() {
           {/* Profile information */}
           <div className="px-2.5 pt-5">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold tracking-tight text-sky-600">
+              <h2 className="text-2xl font-semibold tracking-tight text-sky-600">
                 Jonaidah Caris
               </h2>
 
               <span
                 role="img"
                 aria-label="Portfolio owner"
-                className="flex size-[19px] shrink-0 items-center justify-center rounded-full bg-sky-500 text-white"
+                className="flex size-[21px] shrink-0 items-center justify-center rounded-full bg-sky-500 text-white"
               >
-                <Check size={12} strokeWidth={3} aria-hidden="true" />
+                <Check size={13} strokeWidth={3} aria-hidden="true" />
               </span>
             </div>
 
-            <p className="mt-2 text-sm leading-6 text-slate-600">
+            <p className="mt-2 text-base leading-7 text-slate-600">
               Frontend developer and creative enthusiast who loves clean
               interfaces and thoughtful design.
             </p>
@@ -122,14 +119,14 @@ export default function Hero() {
 
               <a
                 href="#projects"
-                className="flex items-center gap-1.5 text-xs font-medium text-slate-500 transition-colors hover:text-sky-700"
+                className="flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-sky-700"
               >
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.7"
-                  className="size-[17px]"
+                  className="size-[18px]"
                   aria-hidden="true"
                 >
                   <circle cx="12" cy="8" r="3.5" />
@@ -140,14 +137,14 @@ export default function Hero() {
 
               <a
                 href="#art"
-                className="flex items-center gap-1.5 text-xs font-medium text-slate-500 transition-colors hover:text-sky-700"
+                className="flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-sky-700"
               >
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.7"
-                  className="size-[17px]"
+                  className="size-[18px]"
                   aria-hidden="true"
                 >
                   <rect x="4" y="4" width="13" height="13" rx="2" />
@@ -160,10 +157,10 @@ export default function Hero() {
 
             <a
               href="#projects"
-              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-sky-200 bg-sky-200 px-4 py-3 text-xs font-semibold text-[#343a40] transition-all duration-200 hover:border-sky-300 hover:bg-sky-300"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-sky-200 bg-sky-200 px-4 py-3 text-sm font-semibold text-[#343a40] transition-all duration-200 hover:border-sky-300 hover:bg-sky-300"
             >
               Explore
-              <Plus size={16} aria-hidden="true" />
+              <Plus size={17} aria-hidden="true" />
             </a>
           </div>
         </article>
