@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Layers3 } from "lucide-react";
 
+import SectionHeader, { Accent } from "@/components/sections/SectionHeader";
+
 type Testimonial = {
   name: string;
   role: string;
@@ -24,7 +26,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Design Teammate",
     role: "Project collaboration",
-     image: "/images/person3.jpg",
+    image: "/images/person3.jpg",
     quote:
       "Jo listened to feedback and made thoughtful changes. The layouts were clear and consistent, and working together made the whole process smoother.",
     rating: 5,
@@ -33,7 +35,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Somaimah Ampaso",
     role: "Academic project",
-     image: "/images/person2.jpg",
+    image: "/images/person2.jpg",
     quote:
       "Jo put a lot of care into how the project looked and felt to use. Her attention to the small details helped make the final presentation feel polished.",
     rating: 5,
@@ -77,20 +79,23 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section id="testimonials" className="scroll-mt-24 border-t border-sky-100/80 py-12 sm:py-16 lg:py-20">
+    <section
+      id="testimonials"
+      aria-labelledby="testimonials-heading"
+      className="scroll-mt-24 border-t border-sky-100/80 py-12 sm:py-16 lg:py-20"
+    >
       <div className="scroll-reveal overflow-hidden rounded-[28px] border border-white/70 bg-white/[0.32] px-5 py-9 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_60px_rgba(72,104,132,0.12)] backdrop-blur-2xl backdrop-saturate-150 sm:rounded-[32px] sm:px-9 sm:py-12 lg:px-12">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
-            <Layers3 size={14} className="text-sky-600" />
-            TESTIMONIALS
-          </div>
-          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl">
-            Words from <span className="text-sky-600">others.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-600 sm:text-base">
-            A few reflections on collaboration, creativity, and the work we build together.
-          </p>
-        </div>
+        <SectionHeader
+          id="testimonials-heading"
+          icon={Layers3}
+          eyebrow="Testimonials"
+          title={
+            <>
+              Words from <Accent>others.</Accent>
+            </>
+          }
+          subtitle="A few reflections on collaboration, creativity, and the work we build together."
+        />
 
         <div className="relative mt-8 sm:mt-10">
           <div

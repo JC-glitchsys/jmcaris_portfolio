@@ -1,7 +1,8 @@
-
 import { useState } from "react";
 import { motion, useReducedMotion, type Transition } from "motion/react";
 import { Sparkles } from "lucide-react";
+
+import SectionHeader, { Accent } from "@/components/sections/SectionHeader";
 
 type Tool = {
   name: string;
@@ -65,40 +66,31 @@ export default function Tools() {
     ease: [0.22, 1, 0.36, 1],
   };
 
-  const reveal = {
-    initial: reduceMotion ? false : { opacity: 0, y: 10 },
-    whileInView: reduceMotion ? undefined : { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.1 },
-    transition: revealTransition,
-  };
-
   return (
     <section
       id="tools"
       aria-labelledby="tools-heading"
       className="scroll-mt-20 py-14 sm:py-16"
     >
-      <motion.div className="mb-8" {...reveal}>
-        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600">
-          <Sparkles size={15} className="text-sky-600" aria-hidden="true" />
-          Tools & Technologies
-        </div>
-
-        <h2
-          id="tools-heading"
-          className="text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl lg:text-6xl"
-        >
-          Tools I <span className="text-sky-600">Use.</span>
-        </h2>
-
-        <p className="mt-4 text-base text-slate-600 sm:text-lg">
-          The tools I use to design, build, and test.
-        </p>
-      </motion.div>
+      <SectionHeader
+        id="tools-heading"
+        icon={Sparkles}
+        eyebrow="Tools & Technologies"
+        title={
+          <>
+            Tools I <Accent>Use.</Accent>
+          </>
+        }
+        subtitle="The tools I use to design, build, and test."
+        className="mb-10"
+      />
 
       <motion.div
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
-        {...reveal}
+        initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={revealTransition}
       >
         {tools.map((tool) => (
           <div
@@ -129,10 +121,7 @@ export default function Tools() {
               className="size-5"
               aria-hidden="true"
             >
-              <path
-                d="M12 5v14M5 12h14"
-                strokeLinecap="round"
-              />
+              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
             </svg>
           </div>
 

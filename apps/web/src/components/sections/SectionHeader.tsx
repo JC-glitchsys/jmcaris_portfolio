@@ -1,20 +1,22 @@
-import type { ReactNode } from "react"
-import type { LucideIcon } from "lucide-react"
-import { motion, useReducedMotion } from "motion/react"
+import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 
+/* Sky-blue accent word or full stop inside a heading. */
 export function Accent({ children }: { children: ReactNode }) {
-  return <span className="text-sky-600">{children}</span>
+  return <span className="text-sky-600">{children}</span>;
 }
 
 type SectionHeaderProps = {
-  id: string
-  eyebrow: string
-  icon?: LucideIcon
-  title: ReactNode
-  subtitle?: string
-  className?: string
-}
+  id: string;
+  eyebrow: string;
+  icon?: LucideIcon;
+  title: ReactNode;
+  subtitle?: string;
+  className?: string;
+};
 
+/* Centered section title: pill label, big heading, short subtitle. */
 export default function SectionHeader({
   id,
   eyebrow,
@@ -23,7 +25,7 @@ export default function SectionHeader({
   subtitle,
   className = "",
 }: SectionHeaderProps) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.header
@@ -49,5 +51,5 @@ export default function SectionHeader({
         </p>
       )}
     </motion.header>
-  )
+  );
 }

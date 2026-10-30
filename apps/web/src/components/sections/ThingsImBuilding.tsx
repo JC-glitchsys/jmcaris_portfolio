@@ -1,6 +1,9 @@
 import { Layers3 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
+import PageStack from "@/components/sections/PageStack";
+import SectionHeader, { Accent } from "@/components/sections/SectionHeader";
+
 /*
   Card tones. Soft versions of the Figma blue / green / orange cards so white stays
   dominant on the page. Class names are written out in full so Tailwind can find them.
@@ -65,65 +68,6 @@ function ArrowIcon() {
   );
 }
 
-function Bar({ className }: { className: string }) {
-  return <div className={`rounded-2xl bg-[#ededed] ${className}`} />;
-}
-
-/* One sheet of the fanned stack from the Figma card: a small page made of placeholder bars. */
-function Page({
-  className,
-  bar,
-  dot,
-}: {
-  className: string;
-  bar: string;
-  dot: string;
-}) {
-  return (
-    <div
-      className={`absolute h-60 w-52 overflow-hidden rounded-md border border-black/10 bg-[#ffffff] px-2 pb-3 pt-4 ${className}`}
-    >
-      <div className="flex flex-col gap-1.5">
-        <div className="flex flex-col gap-1">
-          <div className="flex gap-1">
-            <Bar className={`w-10 ${bar}`} />
-            <Bar className={`flex-1 ${bar}`} />
-          </div>
-          <Bar className={`w-full ${bar}`} />
-          <Bar className={`w-full ${bar}`} />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Bar className={`w-full ${bar}`} />
-          <Bar className={`w-full ${bar}`} />
-          <Bar className={`w-full ${bar}`} />
-        </div>
-        <div className="flex items-center gap-1">
-          <div className={`size-4 rounded-full ${dot}`} />
-          <Bar className={`w-8 ${bar}`} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PageStack() {
-  return (
-    <div aria-hidden="true" className="absolute left-1/2 top-7 h-64 w-72 -translate-x-1/2">
-      <Page
-        bar="h-5"
-        dot="bg-[#ea3e83]"
-        className="left-0 top-[23px] origin-top-left -rotate-[6.52deg] transition-transform duration-300 motion-safe:group-hover:-rotate-[9deg]"
-      />
-      <Page
-        bar="h-4"
-        dot="bg-[#be79f0]"
-        className="left-[42px] top-[17px] origin-top-left -rotate-[3.26deg] transition-transform duration-300 motion-safe:group-hover:-rotate-[5deg]"
-      />
-      <Page bar="h-2.5" dot="bg-emerald-400" className="left-[84px] top-[11px]" />
-    </div>
-  );
-}
-
 export default function ThingsImBuilding() {
   const reduceMotion = useReducedMotion();
 
@@ -133,30 +77,26 @@ export default function ThingsImBuilding() {
       aria-labelledby="projects-heading"
       className="scroll-mt-20 py-16 sm:py-20 lg:py-24"
     >
-      <motion.div
-        className="mx-auto max-w-[1440px]"
-        initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
-        <div className="text-center">
-          <div className="mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-sm font-medium text-slate-700">
-            <Layers3 size={16} className="text-sky-600" aria-hidden="true" />
-            Creative Space
-          </div>
-          <h2
-            id="projects-heading"
-            className="text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl lg:text-6xl"
-          >
-            Things I’m <span className="text-sky-600">Building.</span>
-          </h2>
-          <p className="mt-4 text-lg text-slate-600 sm:text-xl lg:text-2xl">
-            My Projects. Ideas Brought to Life.
-          </p>
-        </div>
+      <div className="mx-auto max-w-[1440px]">
+        <SectionHeader
+          id="projects-heading"
+          icon={Layers3}
+          eyebrow="Creative Space"
+          title={
+            <>
+              Things I’m <Accent>Building.</Accent>
+            </>
+          }
+          subtitle="My Projects. Ideas Brought to Life."
+        />
 
-        <ul className="mt-12 grid grid-cols-1 gap-6 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <motion.ul
+          className="mt-12 grid grid-cols-1 gap-6 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+          initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
           {folders.map((folder, index) => {
             const tone = tones[folder.tone];
             return (
@@ -176,7 +116,7 @@ export default function ThingsImBuilding() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className={`group relative isolate block h-80 overflow-hidden rounded-[40px] border border-black/5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] ${tone.card}`}
                 >
-                  <PageStack />
+                  <PageStack className="left-1/2 top-7 -translate-x-1/2" />
 
                   <div
                     aria-hidden="true"
@@ -199,8 +139,8 @@ export default function ThingsImBuilding() {
               </li>
             );
           })}
-        </ul>
-      </motion.div>
+        </motion.ul>
+      </div>
     </section>
   );
 }
