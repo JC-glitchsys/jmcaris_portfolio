@@ -10,7 +10,8 @@ type Testimonial = {
   initials: string;
 };
 
-// Replace these sample quotes with genuine feedback before publishing.
+
+
 const testimonials: Testimonial[] = [
   {
     name: "Janisah Macarimbang",
