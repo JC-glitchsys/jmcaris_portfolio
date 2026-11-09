@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion, useReducedMotion, type Transition } from "motion/react";
 import { Sparkles } from "lucide-react";
@@ -70,7 +71,7 @@ export default function Tools() {
     <section
       id="tools"
       aria-labelledby="tools-heading"
-      className="scroll-mt-20 py-14 sm:py-16"
+      className="scroll-mt-20 -mx-5 bg-sky-500 px-5 py-14 sm:-mx-8 sm:px-8 sm:py-16 lg:-mx-12 lg:px-12"
     >
       <SectionHeader
         id="tools-heading"
@@ -82,7 +83,7 @@ export default function Tools() {
           </>
         }
         subtitle="The tools I use to design, build, and test."
-        className="mb-10"
+        className="mb-10 [&_*]:!text-white"
       />
 
       <motion.div
@@ -95,7 +96,7 @@ export default function Tools() {
         {tools.map((tool) => (
           <div
             key={tool.name}
-            className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition-colors hover:border-sky-200"
+            className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-white/70 bg-white px-4 py-3 transition-colors hover:border-sky-200 hover:shadow-md hover:shadow-sky-900/10"
           >
             <div className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-white">
               <ToolIcon name={tool.name} src={tool.icon} />
@@ -111,8 +112,8 @@ export default function Tools() {
         ))}
 
         {/* More soon */}
-        <div className="flex min-h-[72px] items-center gap-3 rounded-2xl border border-dashed border-sky-200 bg-sky-50/40 px-4 py-3">
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-sky-200 bg-white text-sky-600">
+        <div className="flex min-h-[72px] items-center gap-3 rounded-2xl border border-dashed border-white/80 bg-sky-600/40 px-4 py-3">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-white/50 bg-white text-sky-600">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -126,8 +127,8 @@ export default function Tools() {
           </div>
 
           <div>
-            <p className="text-sm font-medium text-slate-700">More soon</p>
-            <p className="mt-1 text-xs text-slate-500">Currently Exploring</p>
+            <p className="text-sm font-medium text-white">More soon</p>
+            <p className="mt-1 text-xs text-sky-100">Currently Exploring</p>
           </div>
         </div>
       </motion.div>
