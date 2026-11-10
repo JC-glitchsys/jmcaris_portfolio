@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 
 import PageStack from "@/components/sections/PageStack";
 import SectionHeader, { Accent } from "@/components/sections/SectionHeader";
+import { projectPages } from "@/data/project-pages";
 
 /*
   Card tones. Soft versions of the Figma blue / green / orange cards so white stays
@@ -22,34 +23,6 @@ const tones = {
     fade: "from-orange-200/0 via-orange-200/90 to-orange-200",
   },
 } as const;
-
-type FolderItem = {
-  title: string;
-  description: string;
-  href: string;
-  tone: keyof typeof tones;
-};
-
-const folders: FolderItem[] = [
-  {
-    title: "Visual & Editorial",
-    description: "Layouts, pubmats, and publication releases.",
-    href: "/visual-editorial",
-    tone: "sky",
-  },
-  {
-    title: "UI/UX Design",
-    description: "Interfaces, prototypes, and design systems.",
-    href: "/ui-ux-design",
-    tone: "emerald",
-  },
-  {
-    title: "Frontend Projects",
-    description: "React websites and interactive experiences.",
-    href: "/frontend-projects",
-    tone: "orange",
-  },
-];
 
 function ArrowIcon() {
   return (
@@ -97,7 +70,7 @@ export default function ThingsImBuilding() {
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          {folders.map((folder, index) => {
+          {projectPages.map((folder, index) => {
             const tone = tones[folder.tone];
             return (
               <li

@@ -13,9 +13,11 @@ const navItems = [
 type HeaderProps = {
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  /* "/" on gallery pages so #anchors point back to the home page */
+  prefix?: string;
 };
 
-export default function Header({ isDarkMode, onToggleTheme }: HeaderProps) {
+export default function Header({ isDarkMode, onToggleTheme, prefix = "" }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const themeLabel = isDarkMode ? "Switch to light mode" : "Switch to dark mode";
   const ThemeIcon = isDarkMode ? Sun : Moon;
@@ -33,7 +35,7 @@ export default function Header({ isDarkMode, onToggleTheme }: HeaderProps) {
         }`}
       >
         {/* Brand */}
-        <a href="#home" className="group flex shrink-0 items-center gap-3">
+        <a href={`${prefix}#home`} className="group flex shrink-0 items-center gap-3">
           <div className="size-11 shrink-0 rounded-full border-2 border-white bg-white p-0.5 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none">
             <img
               src="/images/profile-brown.jpg"
@@ -56,7 +58,7 @@ export default function Header({ isDarkMode, onToggleTheme }: HeaderProps) {
           {navItems.map((item) => (
             <a
               key={item.href}
-              href={item.href}
+              href={`${prefix}${item.href}`}
               className="rounded-full px-3 py-2 text-[15px] font-medium tracking-[-0.01em] transition-colors duration-200 hover:bg-white/20 lg:px-3.5"
             >
               {item.label}
@@ -78,7 +80,7 @@ export default function Header({ isDarkMode, onToggleTheme }: HeaderProps) {
           </button>
 
           <a
-            href="#contact"
+            href={`${prefix}#contact`}
             className="hidden items-center whitespace-nowrap rounded-full border border-white bg-white px-5 py-2.5 text-[15px] font-semibold text-sky-700 transition-colors hover:bg-sky-50 sm:inline-flex"
           >
             Contact Me
@@ -113,7 +115,7 @@ export default function Header({ isDarkMode, onToggleTheme }: HeaderProps) {
             {navItems.map((item) => (
               <li key={item.href}>
                 <a
-                  href={item.href}
+                  href={`${prefix}${item.href}`}
                   onClick={() => setMenuOpen(false)}
                   className="block rounded-xl px-4 py-3 text-[15px] font-medium transition-colors hover:bg-white/20"
                 >

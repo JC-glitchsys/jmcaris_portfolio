@@ -9,6 +9,12 @@ import Hero from "@/components/sections/Hero";
 import Testimonials from "@/components/sections/Testimonials";
 import ThingsImBuilding from "@/components/sections/ThingsImBuilding";
 import Tools from "@/components/sections/Tools";
+import { projectPages } from "@/data/project-pages";
+import ProjectPage from "@/pages/ProjectPage";
+
+/* No router needed: each gallery is its own URL, so we just match the path. */
+const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+const activePage = projectPages.find((page) => page.href === currentPath);
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -23,18 +29,29 @@ export default function App() {
       <GridBackground />
 
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-        <Header isDarkMode={isDarkMode} onToggleTheme={() => setIsDarkMode((dark) => !dark)} />
+        <Header
+          isDarkMode={isDarkMode}
+          onToggleTheme={() => setIsDarkMode((dark) => !dark)}
+          prefix={activePage ? "/" : ""}
+        />
 
-        <main>
-          <Hero />
-          <Tools />
-          <ThingsImBuilding />
-          <AboutMe />
-          <Testimonials />
-          <Creative />
-        </main>
-
-        <Contact />
+        {activePage ? (
+          <main>
+            <ProjectPage page={activePage} />
+          </main>
+        ) : (
+          <>
+            <main>
+              <Hero />
+              <Tools />
+              <ThingsImBuilding />
+              <AboutMe />
+              <Testimonials />
+              <Creative />
+            </main>
+            <Contact />
+          </>
+        )}
       </div>
     </div>
   );
