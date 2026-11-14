@@ -2,7 +2,7 @@ import { Download } from "lucide-react";
 import { Reveal } from "../sumi/Ink";
 import { asset } from "../sumi/hooks";
 
-export default function AboutMe() {
+
   const skills = [
     "HTML",
     "CSS",

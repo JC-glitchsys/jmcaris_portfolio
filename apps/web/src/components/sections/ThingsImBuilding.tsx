@@ -101,7 +101,7 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function ThingsImBuilding() {
-  const reduceMotion = useReducedMotion();
+  
 
   return (
     <section id="projects" className="scroll-mt-12 py-20 sm:py-24 lg:py-28">
