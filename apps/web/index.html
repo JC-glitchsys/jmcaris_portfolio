@@ -1,12 +1,35 @@
+
 <!doctype html>
 <html lang="en">
   <head>
-
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vite-monorepo</title>
+    <meta name="theme-color" content="#F5F1E8" />
+    <meta
+      name="description"
+      content="Portfolio of Jonaidah Caris: UI/UX designer, frontend developer, and layout artist."
+    />
+    <title>Jonaidah Caris | Frontend Developer &amp; Creative</title>
+
+    <!-- Apply a saved "ink night" choice before first paint (avoids a light flash). -->
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || (t === "system" && matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {}
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

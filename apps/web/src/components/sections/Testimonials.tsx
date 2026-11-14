@@ -1,5 +1,8 @@
-import { useEffect, useRef } from "react";
-import { Layers3 } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
+import type { FocusEvent, KeyboardEvent, PointerEvent } from "react";
+import { ChevronLeft, ChevronRight, Layers3 } from "lucide-react";
+import { Reveal, SectionHeading } from "../sumi/Ink";
+import { asset } from "../sumi/hooks";
 
 type Testimonial = {
   name: string;
@@ -8,15 +11,15 @@ type Testimonial = {
   rating: number;
   image?: string;
   initials: string;
+  /** Fictional placeholder content, shown with a "Sample" tag. */
+  sample?: boolean;
 };
-
-
 
 const testimonials: Testimonial[] = [
   {
     name: "Janisah Macarimbang",
     role: "Backend collaboration",
-    image: "/images/person1.jpg",
+    image: asset("images/person1.jpg"),
     quote:
       "Jo was easy to work with and always open to sharing ideas. She paid attention to the details and helped keep our project moving in the right direction.",
     rating: 4,
@@ -25,7 +28,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Design Teammate",
     role: "Project collaboration",
-     image: "/images/person3.jpg",
+     image: asset("images/person3.jpg"),
     quote:
       "Jo listened to feedback and made thoughtful changes. The layouts were clear and consistent, and working together made the whole process smoother.",
     rating: 5,
@@ -34,125 +37,366 @@ const testimonials: Testimonial[] = [
   {
     name: "Somaimah Ampaso",
     role: "Academic project",
-     image: "/images/person2.jpg",
+     image: asset("images/person2.jpg"),
     quote:
       "Jo put a lot of care into how the project looked and felt to use. Her attention to the small details helped make the final presentation feel polished.",
     rating: 5,
     initials: "SA",
   },
+  {
+    name: "Mika Reyes",
+    role: "Sample: project lead",
+    quote:
+      "Sample feedback: clear communication, tidy component structure, and layouts that held up well on small screens. Handoffs were easy to follow.",
+    rating: 5,
+    initials: "MR",
+    sample: true,
+  },
+  {
+    name: "Daniel Cruz",
+    role: "Sample: code reviewer",
+    quote:
+      "Sample feedback: readable code, sensible naming, and a habit of testing the edge cases before asking for review.",
+    rating: 4.5,
+    initials: "DC",
+    sample: true,
+  },
+  {
+    name: "Lena Okafor",
+    role: "Sample: UI critique partner",
+    quote:
+      "Sample feedback: she turns vague notes into concrete interface changes and keeps spacing and type consistent from screen to screen.",
+    rating: 5,
+    initials: "LO",
+    sample: true,
+  },
 ];
 
-const loopedTestimonials = [...testimonials, ...testimonials];
+const DRAG_THRESHOLD = 5;
+/** Auto-slide speed in px per second: one card takes roughly half a minute. */
+const SPEED = 16;
+/** After the person touches, scrolls, or uses an arrow, autoplay waits this long. */
+const IDLE_RESUME_MS = 3500;
+const CARD_GAP = 20;
+/*
+  Three identical copies sit side by side so the slider can loop in both directions.
+  Only copy 1 is real content: copies 0 and 2 are aria-hidden and inert visual duplicates,
+  so there are still exactly six testimonials for assistive tech and keyboards.
+*/
+const COPIES = [0, 1, 2];
+
+function TestimonialCard({ testimonial, copy }: { testimonial: Testimonial; copy: number }) {
+  return (
+    <article
+      data-testimonial-card
+      data-copy={copy}
+      aria-hidden={copy !== 1 || undefined}
+      inert={copy !== 1}
+      className="sumi-card slider-card flex flex-col p-7 sm:p-8"
+      style={{ background: "var(--card-solid)" }}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex gap-1" style={{ color: "var(--gold)" }} aria-label={`${testimonial.rating} out of 5 stars`}>
+          {Array.from({ length: Math.floor(testimonial.rating) }, (_, starIndex) => (
+            <span key={starIndex} aria-hidden="true" className="text-base leading-none">★</span>
+          ))}
+          {testimonial.rating % 1 !== 0 && (
+            <span aria-hidden="true" className="text-base leading-none">½</span>
+          )}
+        </div>
+        {testimonial.sample ? (
+          <span className="sumi-label rounded-full border px-2.5 py-1 !text-[0.56rem]" style={{ borderColor: "var(--edge-strong)", color: "var(--ink-mute)" }}>
+            Sample
+          </span>
+        ) : (
+          <span className="sumi-label !text-[0.62rem]" style={{ color: "var(--ink-mute)" }}>{testimonial.rating.toFixed(1)}</span>
+        )}
+      </div>
+      <p className="sumi-text mt-6 min-h-[132px] flex-1 !text-[0.9rem] !leading-[1.95]">
+        “{testimonial.quote}”
+      </p>
+      <div className="mt-6 flex items-center gap-4 border-t pt-5" style={{ borderColor: "var(--edge)" }}>
+        <div
+          className="h-12 w-12 shrink-0 overflow-hidden rounded-full border p-0.5 sm:h-14 sm:w-14"
+          style={{ borderColor: "var(--edge-strong)", background: "var(--card-solid)" }}
+        >
+          {testimonial.image ? (
+            <img
+              src={testimonial.image}
+              alt={`${testimonial.name}'s profile`}
+              draggable={false}
+              className="h-full w-full rounded-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="f-display flex h-full w-full items-center justify-center rounded-full text-sm" style={{ color: "var(--gold-deep)" }}>
+              {testimonial.initials}
+            </div>
+          )}
+        </div>
+        <div className="min-w-0">
+          <p className="f-display truncate !text-[1.05rem] tracking-[0.08em]" style={{ color: "var(--ink)" }}>{testimonial.name}</p>
+          <p className="sumi-text-sm mt-0.5 !text-[0.72rem]">{testimonial.role}</p>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
-  const pausedRef = useRef(false);
+  const drag = useRef({ active: false, moved: false, startX: 0, startLeft: 0 });
+  const auto = useRef({
+    pos: 0,
+    lastSet: 0,
+    setW: 0,
+    hover: false,
+    focus: false,
+    touching: false,
+    snapAfter: false,
+    visible: true,
+    idleUntil: 0,
+  });
 
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let stepTimer = 0;
-    const start = () => {
-      window.clearInterval(stepTimer);
-      stepTimer = window.setInterval(() => {
-        if (pausedRef.current || !track) return;
-        const card = track.querySelector<HTMLElement>("[data-testimonial-card]");
-        if (!card) return;
-        const styles = window.getComputedStyle(track);
-        const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
-        const step = card.getBoundingClientRect().width + gap;
-        const halfway = track.scrollWidth / 2;
-
-        if (track.scrollLeft >= halfway - step / 2) {
-          track.scrollTo({ left: 0, behavior: "auto" });
-          requestAnimationFrame(() => track.scrollBy({ left: step, behavior: "smooth" }));
-        } else {
-          track.scrollBy({ left: step, behavior: "smooth" });
-        }
-      }, 3000);
-    };
-
-    start();
-    return () => window.clearInterval(stepTimer);
+  const holdAutoplay = useCallback(() => {
+    auto.current.idleUntil = performance.now() + IDLE_RESUME_MS;
   }, []);
 
-  return (
-    <section id="testimonials" className="scroll-mt-24 border-t border-sky-100/80 py-12 sm:py-16 lg:py-20">
-      <div className="scroll-reveal overflow-hidden rounded-[28px] border border-white/70 bg-white/[0.32] px-5 py-9 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_22px_60px_rgba(72,104,132,0.12)] backdrop-blur-2xl backdrop-saturate-150 sm:rounded-[32px] sm:px-9 sm:py-12 lg:px-12">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/55 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl">
-            <Layers3 size={14} className="text-sky-600" />
-            TESTIMONIALS
-          </div>
-          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.045em] text-slate-900 sm:text-5xl">
-            Words from <span className="text-sky-600">others.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-600 sm:text-base">
-            A few reflections on collaboration, creativity, and the work we build together.
-          </p>
-        </div>
+  /* Autoplay: one requestAnimationFrame loop; it only writes scrollLeft while nothing is interacting. */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const st = auto.current;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-        <div className="relative mt-8 sm:mt-10">
+    const measure = () => {
+      const first = track.querySelector<HTMLElement>('[data-copy="0"]');
+      const second = track.querySelector<HTMLElement>('[data-copy="1"]');
+      if (first && second) st.setW = second.offsetLeft - first.offsetLeft;
+    };
+    const jump = (x: number) => track.scrollTo({ left: x, behavior: "instant" });
+
+    /** Keep the view inside the middle copy's neighbourhood; the content is identical, so the jump is invisible. */
+    const normalize = () => {
+      const w = st.setW;
+      if (!w) return;
+      const x = track.scrollLeft;
+      if (x < w * 0.5) jump(x + w);
+      else if (x >= w * 2) jump(x - w);
+      st.pos = track.scrollLeft;
+      st.lastSet = st.pos;
+    };
+
+    measure();
+    jump(st.setW);
+    st.pos = st.lastSet = track.scrollLeft;
+
+    const ro = new ResizeObserver(() => {
+      const before = st.setW;
+      measure();
+      if (before && st.setW && before !== st.setW) {
+        jump(st.setW + ((track.scrollLeft - before) % st.setW));
+        st.pos = st.lastSet = track.scrollLeft;
+      }
+    });
+    ro.observe(track);
+
+    const io = new IntersectionObserver(([entry]) => {
+      st.visible = entry.isIntersecting;
+    });
+    io.observe(track);
+
+    /** After a swipe, glide to the nearest card start so cards never rest half-cut. */
+    const snapToNearest = () => {
+      const trackLeft = track.getBoundingClientRect().left;
+      let best: { x: number; d: number } | null = null;
+      track.querySelectorAll<HTMLElement>("[data-testimonial-card]").forEach((card) => {
+        const x = card.getBoundingClientRect().left - trackLeft + track.scrollLeft;
+        const d = Math.abs(x - track.scrollLeft);
+        if (!best || d < best.d) best = { x, d };
+      });
+      const target = best as { x: number; d: number } | null;
+      if (target && target.d > 2) track.scrollTo({ left: target.x, behavior: "smooth" });
+    };
+
+    let settle = 0;
+    const onSettled = () => {
+      normalize();
+      if (st.snapAfter && !st.touching) {
+        st.snapAfter = false;
+        snapToNearest();
+      }
+    };
+    const onScroll = () => {
+      // Our own writes land within a pixel or two of lastSet; anything else is the person scrolling.
+      if (Math.abs(track.scrollLeft - st.lastSet) > 3) {
+        holdAutoplay();
+        window.clearTimeout(settle);
+        settle = window.setTimeout(onSettled, 160);
+      }
+    };
+    track.addEventListener("scroll", onScroll, { passive: true });
+
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(64, now - last) / 1000;
+      last = now;
+      const paused =
+        st.hover || st.focus || st.touching || now < st.idleUntil || !st.visible || document.hidden || reduceMotion.matches;
+      if (paused) {
+        st.pos = track.scrollLeft;
+      } else if (st.setW) {
+        st.pos += SPEED * dt;
+        if (st.pos >= st.setW * 2) st.pos -= st.setW;
+        st.lastSet = st.pos;
+        track.scrollLeft = st.pos;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(settle);
+      ro.disconnect();
+      io.disconnect();
+      track.removeEventListener("scroll", onScroll);
+    };
+  }, [holdAutoplay]);
+
+  const step = useCallback(
+    (direction: 1 | -1) => {
+      const track = trackRef.current;
+      const card = track?.querySelector<HTMLElement>("[data-testimonial-card]");
+      if (!track || !card) return;
+      holdAutoplay();
+      track.scrollBy({ left: direction * (card.getBoundingClientRect().width + CARD_GAP), behavior: "smooth" });
+    },
+    [holdAutoplay],
+  );
+
+  const onPointerDown = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      const track = trackRef.current;
+      if (!track) return;
+      if (e.pointerType !== "mouse") {
+        // Touch and pen use native scrolling and momentum; autoplay stands still meanwhile.
+        auto.current.touching = true;
+        auto.current.snapAfter = true;
+        return;
+      }
+      if (e.button !== 0) return;
+      drag.current = { active: true, moved: false, startX: e.clientX, startLeft: track.scrollLeft };
+    },
+    [],
+  );
+
+  const onPointerMove = useCallback((e: PointerEvent<HTMLDivElement>) => {
+    const track = trackRef.current;
+    const d = drag.current;
+    if (!track || !d.active) return;
+    const dx = e.clientX - d.startX;
+    if (!d.moved && Math.abs(dx) < DRAG_THRESHOLD) return;
+    if (!d.moved) {
+      d.moved = true;
+      track.classList.add("is-dragging");
+      track.setPointerCapture(e.pointerId);
+    }
+    track.scrollLeft = d.startLeft - dx;
+  }, []);
+
+  const endPointer = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      const track = trackRef.current;
+      const d = drag.current;
+      if (e.pointerType !== "mouse") {
+        auto.current.touching = false;
+        holdAutoplay();
+      }
+      if (!track || !d.active) return;
+      d.active = false;
+      if (d.moved) {
+        if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId);
+        track.classList.remove("is-dragging");
+        holdAutoplay();
+      }
+    },
+    [holdAutoplay],
+  );
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault();
+      step(e.key === "ArrowRight" ? 1 : -1);
+    },
+    [step],
+  );
+
+  // Pause while the pointer is over the slider or arrows, or while keyboard focus is inside.
+  const onFocus = (e: FocusEvent<HTMLDivElement>) => {
+    if (e.target.matches(":focus-visible")) auto.current.focus = true;
+  };
+  const onBlur = (e: FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) auto.current.focus = false;
+  };
+
+  return (
+    <section id="testimonials" className="scroll-mt-24 py-16 sm:py-20 lg:py-24">
+      <Reveal>
+        <SectionHeading
+          align="center"
+          eyebrow="TESTIMONIALS"
+          icon={<Layers3 size={14} style={{ color: "var(--gold-deep)" }} aria-hidden="true" />}
+          subtitle="A few reflections on collaboration, creativity, and the work we build together. Cards tagged Sample are demo placeholders, not real endorsements."
+        >
+          Words from <span className="sumi-accent">others.</span>
+        </SectionHeading>
+
+        <div
+          onPointerEnter={(e) => {
+            if (e.pointerType === "mouse") auto.current.hover = true;
+          }}
+          onPointerLeave={(e) => {
+            if (e.pointerType === "mouse") {
+              auto.current.hover = false;
+              holdAutoplay();
+            }
+          }}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        >
           <div
             ref={trackRef}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            aria-label="Testimonials carousel; moves automatically and can be swiped"
-            onMouseEnter={() => { pausedRef.current = true; }}
-            onMouseLeave={() => { pausedRef.current = false; }}
-            onFocus={() => { pausedRef.current = true; }}
-            onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget as Node | null)) pausedRef.current = false;
-            }}
-            onTouchStart={() => { pausedRef.current = true; }}
-            onTouchEnd={() => { window.setTimeout(() => { pausedRef.current = false; }, 1200); }}
+            className="slider"
+            role="region"
+            aria-label="Testimonials. They drift slowly and pause when you hover or touch. Swipe, drag, or use the arrow buttons to browse."
+            tabIndex={0}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endPointer}
+            onPointerCancel={endPointer}
+            onKeyDown={onKeyDown}
+            onDragStart={(e) => e.preventDefault()}
           >
-            {loopedTestimonials.map((testimonial, index) => (
-              <article
-                data-testimonial-card
-                key={`${testimonial.name}-${index}`}
-                aria-hidden={index >= testimonials.length ? true : undefined}
-                className="w-[86%] min-w-[86%] snap-start rounded-[22px] border border-sky-100/90 bg-white/90 p-5 shadow-[0_8px_24px_rgba(74,132,174,0.07)] transition-colors hover:border-sky-200 sm:w-[calc(50%-8px)] sm:min-w-[calc(50%-8px)] sm:p-6 lg:w-[calc(33.333%-11px)] lg:min-w-[calc(33.333%-11px)]"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex gap-1 text-sky-500" aria-label={`${testimonial.rating} out of 5 stars`}>
-                    {Array.from({ length: Math.floor(testimonial.rating) }, (_, starIndex) => (
-                      <span key={starIndex} aria-hidden="true" className="text-lg leading-none sm:text-xl">★</span>
-                    ))}
-                    {testimonial.rating % 1 !== 0 && (
-                      <span aria-hidden="true" className="text-lg leading-none sm:text-xl">½</span>
-                    )}
-                  </div>
-                  <span className="text-xs font-medium text-slate-400">{testimonial.rating.toFixed(1)}</span>
-                </div>
-                <p className="mt-5 min-h-[112px] text-sm leading-7 text-slate-600 sm:min-h-[126px]">
-                  “{testimonial.quote}”
-                </p>
-                <div className="mt-5 flex items-center gap-3 border-t border-sky-100 pt-4">
-                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-sky-400 bg-sky-50 p-0.5 shadow-[0_0_12px_rgba(56,189,248,0.18)] sm:h-14 sm:w-14">
-                    {testimonial.image ? (
-                      <img
-                        src={testimonial.image}
-                        alt={`${testimonial.name}'s profile`}
-                        className="h-full w-full rounded-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center rounded-full bg-sky-100 text-sm font-semibold text-sky-700">
-                        {testimonial.initials}
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-slate-800">{testimonial.name}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">{testimonial.role}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
+            {COPIES.map((copy) =>
+              testimonials.map((testimonial) => (
+                <TestimonialCard key={`${copy}-${testimonial.name}`} testimonial={testimonial} copy={copy} />
+              )),
+            )}
+          </div>
+
+          <div className="mt-5 flex items-center justify-center gap-3 sm:justify-end">
+            <button type="button" className="slider-arrow" aria-label="Previous testimonial" onClick={() => step(-1)}>
+              <ChevronLeft className="size-[18px]" strokeWidth={1.6} aria-hidden="true" />
+            </button>
+            <button type="button" className="slider-arrow" aria-label="Next testimonial" onClick={() => step(1)}>
+              <ChevronRight className="size-[18px]" strokeWidth={1.6} aria-hidden="true" />
+            </button>
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

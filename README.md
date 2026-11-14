@@ -1,21 +1,14 @@
-# shadcn/ui monorepo template
+# jmcaris_portfolio
 
-This is a Vite monorepo template with shadcn/ui.
-
-## Adding components
-
-To add components to your app, run the following command at the root of your `web` app:
+Sumi-e editorial portfolio: React + TypeScript + Tailwind CSS v4 + Framer Motion (Vite, npm workspaces + Turbo).
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+npm install
+npm run dev            # local dev server
+npm run build          # type-check + production build
+npm run build:github   # build for GitHub Pages (/jmcaris_portfolio/)
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
-
-## Using components
-
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@workspace/ui/components/button";
-```
+Notes
+- The opening "Ink Awakens" loader plays once per browser session (see `INTRO_KEY` in `apps/web/src/App.tsx`).
+- Light rice-paper theme by default; "ink night" is toggled with the moon button (or the `D` key) and remembered.
