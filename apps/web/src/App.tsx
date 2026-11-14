@@ -376,5 +376,3 @@ export function App() {
     </MotionConfig>
   );
 }
-
-export default App;

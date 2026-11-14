@@ -24,6 +24,11 @@ export default function AboutMe() {
   ];
   const softSkills = ["Time Management", "Adaptability", "Communication"];
 
+/*
+  Structure note: like Creative, the card wrapper stays the direct child of the section
+  (the dark theme styles "section > div").
+*/
+export default function AboutMe() {
   return (
     <section id="about" className="scroll-mt-12 py-16 sm:py-24">
       <div className="mx-auto max-w-[1440px]">
