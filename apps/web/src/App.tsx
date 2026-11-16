@@ -1,22 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { MotionConfig, motion } from "framer-motion";
-import { ArrowUpRight, ArrowDown, Sparkles } from "lucide-react";
+import { ArrowUpRight, ArrowDown } from "lucide-react";
 
 import ThingsImBuilding from "./components/sections/ThingsImBuilding";
 import AboutMe from "./components/sections/AboutMe";
 import Testimonials from "./components/sections/Testimonials";
+import ToolsSection from "./components/sections/ToolsSection";
 import Navbar from "./components/layout/Navbar";
 import GalleryPage from "./components/gallery/GalleryPage";
 import ScrollManager from "./components/ScrollManager";
+import NinjaChatbot from "./components/chat/NinjaChatbot";
 
 // Sumi-e world
 import SumiDefs from "./components/sumi/SumiDefs";
 import SumiLoader from "./components/sumi/SumiLoader";
 import HeroSumi, { HeroEnso } from "./components/sumi/HeroSumi";
 import NinjaPortrait from "./components/sumi/NinjaPortrait";
+import { asset } from "./components/sumi/hooks";
 import MusicToggle from "./components/sumi/MusicToggle";
-import { BambooGrove, Reveal, ScrollProgress, SectionHeading, SumiDivider } from "./components/sumi/Ink";
+import { ScrollProgress, SectionHeading, SumiDivider } from "./components/sumi/Ink";
 
 const INTRO_KEY = "sumi-intro-seen";
 
@@ -31,28 +34,6 @@ function shouldShowIntro(): boolean {
 }
 
 type Phase = "loading" | "revealing" | "done";
-
-const tools = [
-  { name: "React", icon: "https://cdn.simpleicons.org/react/61DAFB", note: "Frontend" },
-  { name: "Vue.js", icon: "https://cdn.simpleicons.org/vuedotjs/42B883", note: "Frontend" },
-  { name: "JavaScript", icon: "https://cdn.simpleicons.org/javascript/F7DF1E", note: "Language" },
-  { name: "Tailwind CSS", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4", note: "Styling" },
-  { name: "Next.js", icon: "https://cdn.simpleicons.org/nextdotjs/000000", note: "React Framework" },
-  { name: "shadcn/ui", icon: "https://cdn.simpleicons.org/shadcnui/000000", note: "UI Components" },
-  { name: "HTML5", icon: "https://cdn.simpleicons.org/html5/E34F26", note: "Markup" },
-  { name: "CSS3", icon: "https://cdn.simpleicons.org/css/1572B6", note: "Styling" },
-  { name: "Node.js", icon: "https://cdn.simpleicons.org/nodedotjs/5FA04E", note: "Runtime" },
-  { name: "Express.js", icon: "https://cdn.simpleicons.org/express/000000", note: "Backend" },
-  { name: "Firebase", icon: "https://cdn.simpleicons.org/firebase/FFCA28", note: "Backend Services" },
-  { name: "MySQL", icon: "https://cdn.simpleicons.org/mysql/4479A1", note: "Database" },
-  { name: "Figma", icon: "https://cdn.simpleicons.org/figma/F24E1E", note: "UI/UX Design" },
-  { name: "Canva", icon: "https://cdn.simpleicons.org/canva/00C4CC", note: "Graphic Design" },
-  { name: "Jira", icon: "https://cdn.simpleicons.org/jira/0052CC", note: "Project Tracking" },
-  { name: "Cypress", icon: "https://cdn.simpleicons.org/cypress/69D3A7", note: "Testing" },
-  { name: "Git", icon: "https://cdn.simpleicons.org/git/F05032", note: "Version Control" },
-  { name: "GitHub", icon: "https://cdn.simpleicons.org/github/181717", note: "Code Hosting" },
-  { name: "TestRail", icon: "https://cdn.simpleicons.org/testrail/65C179", note: "Test Management" },
-];
 
 const contactCard = "sumi-card group flex items-center gap-4 p-5 hover:-translate-y-1";
 const contactIcon =
@@ -86,6 +67,7 @@ export function App() {
       <ScrollProgress />
       <ScrollManager />
       <MusicToggle />
+      {phase === "done" && <NinjaChatbot />}
       {phase !== "done" && <SumiLoader key="sumi-loader" onReveal={revealHero} onDone={finishIntro} />}
 
       <main
@@ -122,8 +104,8 @@ export function App() {
                 </span>
               </div>
 
-              <h1 className="sumi-name max-w-xl !text-[clamp(3.5rem,7.2vw,6.1rem)] !font-bold !tracking-[0.03em]">
-                <span className="block">Jonaidah</span> <span className="block">Caris</span>
+              <h1 className="sumi-name max-w-xl">
+                <span className="block">Jonaidah</span> <span className="sumi-name-accent block">Caris</span>
               </h1>
 
               <p className="sumi-text mt-8 max-w-md !font-medium !text-[1rem] !leading-[1.9] sm:text-[1.05rem]">
@@ -147,7 +129,7 @@ export function App() {
             <div className="relative order-1 flex items-center justify-center md:order-2">
               <HeroEnso
                 play={ready}
-                className="absolute left-1/2 top-1/2 z-0 w-[min(118%,660px)] max-w-none -translate-x-1/2 -translate-y-[52%]"
+                className="absolute left-1/2 top-1/2 z-0 w-[min(120%,690px)] max-w-none -translate-x-1/2 -translate-y-1/2"
               />
               <div className="relative z-10 w-full">
                 <NinjaPortrait play={ready} />
@@ -155,83 +137,15 @@ export function App() {
             </div>
           </section>
 
-          <SumiDivider />
-
-          {/* Tech stack & tools */}
-          <section id="tools" className="relative scroll-mt-12 py-20 sm:py-24">
-            {/* bamboo grows around the section, behind the cards */}
-            <BambooGrove />
-
-            <div className="relative z-10">
-              <SectionHeading
-                eyebrow="Tools & Technologies"
-                icon={<Sparkles size={14} style={{ color: "var(--gold-deep)" }} aria-hidden="true" />}
-                subtitle="The tools I use to design, build, and test."
-              >
-                Tools I <span className="sumi-accent">Use.</span>
-              </SectionHeading>
-
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-                {tools.map((tool, i) => (
-                  <Reveal key={tool.name} delay={(i % 5) * 0.06} className="h-full">
-                    <div className="sumi-card group flex h-full min-h-[92px] items-center gap-4 px-4 py-3.5 hover:-translate-y-0.5">
-                      <div
-                        className="sumi-tile flex size-12 shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-105"
-                        style={{ background: "#eae3d6" }}
-                      >
-                        <img
-                          src={tool.icon}
-                          alt={`${tool.name} logo`}
-                          width={24}
-                          height={24}
-                          loading="lazy"
-                          className="size-6 object-contain saturate-[0.8] transition duration-300 group-hover:saturate-100"
-                        />
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <p className="f-body truncate !text-[0.85rem] !font-normal" style={{ color: "var(--ink)" }}>
-                          {tool.name}
-                        </p>
-                        <p className="sumi-text-sm mt-0.5 !text-[0.7rem]">{tool.note}</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                ))}
-
-                {/* More soon */}
-                <Reveal delay={0.2} className="h-full">
-                  <div
-                    className="flex h-full min-h-[92px] items-center gap-4 rounded-[14px] border border-dashed px-4 py-3.5"
-                    style={{ borderColor: "var(--gold-line)" }}
-                  >
-                    <div
-                      className="sumi-tile flex size-12 shrink-0 items-center justify-center"
-                      style={{ color: "var(--gold-deep)" }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="size-5" aria-hidden="true">
-                        <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                      </svg>
-                    </div>
-
-                    <div>
-                      <p className="f-body !text-[0.85rem] !font-normal" style={{ color: "var(--ink)" }}>
-                        More soon
-                      </p>
-                      <p className="sumi-text-sm mt-0.5 !text-[0.7rem]">Currently Exploring</p>
-                    </div>
-                  </div>
-                </Reveal>
-              </div>
-            </div>
-          </section>
-
-          <SumiDivider />
-
           {/* Creative Space (projects) */}
           <ThingsImBuilding />
 
           <AboutMe />
+
+          <SumiDivider />
+
+          {/* Tech stack & tools */}
+          <ToolsSection />
 
           <Testimonials />
 
@@ -239,9 +153,9 @@ export function App() {
 
           {/* Footer / Contact */}
           <footer id="contact" className="mt-12 scroll-mt-24 pb-12 pt-12 sm:pb-14">
-            <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
+            <div className="grid gap-10">
               {/* Contact intro */}
-              <div className="max-w-xl">
+              <div className="mx-auto flex max-w-2xl flex-col items-center">
                 <SectionHeading
                   eyebrow="Get in touch"
                   icon={
@@ -270,7 +184,7 @@ export function App() {
               </div>
 
               {/* Contact links */}
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="mx-auto grid w-full max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <a href="mailto:your-email@gmail.com" className={contactCard}>
                   <span className={contactIcon} style={{ borderColor: "var(--gold-line)", color: "var(--gold-deep)" }}>
                     <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
@@ -324,36 +238,39 @@ export function App() {
               </div>
             </div>
 
-            {/* Quiet Sumi-e landscape: moon, distant mountains, and a small torii */}
-            <div className="relative mt-16 h-40 overflow-hidden rounded-[16px] border"
-              style={{ borderColor: "var(--gold-line)", background: "linear-gradient(180deg, rgba(234,227,214,0.24), rgba(201,169,106,0.08))" }}
-              aria-hidden="true"
-            >
-              <svg viewBox="0 0 1200 190" preserveAspectRatio="xMidYMax slice" className="absolute inset-0 h-full w-full">
-                <circle cx="950" cy="55" r="30" fill="var(--sun)" opacity="0.72" />
-                <path d="M0 145 Q120 92 230 132 T470 128 Q600 70 740 132 T1000 118 Q1110 90 1200 130 L1200 190 L0 190Z" fill="var(--brush)" opacity="0.10" />
-                <path d="M0 165 Q150 122 280 154 T560 146 Q700 110 830 152 T1080 145 Q1150 132 1200 150 L1200 190 L0 190Z" fill="var(--brush)" opacity="0.15" />
-                <g transform="translate(820 82)" fill="none" stroke="var(--brush)" strokeWidth="5" strokeLinecap="round" opacity="0.56">
-                  <path d="M-34 18 H34 M-28 18 V62 M28 18 V62 M-42 7 H42 M-48 0 Q0 -13 48 0 M-38 7 Q0 -2 38 7" />
-                  <path d="M-35 31 H35 M-25 31 V62 M25 31 V62" strokeWidth="3" />
-                </g>
-                <path d="M0 174 Q220 159 420 173 T820 168 T1200 171" fill="none" stroke="var(--gold-deep)" strokeWidth="1.5" opacity="0.45" />
-              </svg>
+            {/* Shrine in the mist: the artwork sits on the paper itself, with no frame around it */}
+            <div aria-hidden="true" className="footer-shrine mx-auto -mb-6 mt-16 w-full max-w-[920px] sm:-mb-12 sm:mt-20">
+              <img
+                src={asset("images/footer/torii-shrine.webp")}
+                alt=""
+                width={1182}
+                height={400}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                className="block h-auto w-full select-none"
+              />
             </div>
 
             {/* Footer bottom */}
             <div
-              className="mt-8 flex flex-col justify-between gap-5 border-t px-1 pt-7 sm:flex-row sm:items-center sm:gap-6"
+              className="-mt-3 flex flex-col justify-between gap-5 border-t px-1 pt-7 sm:flex-row sm:items-center sm:gap-6"
               style={{ borderColor: "var(--gold-line)" }}
             >
-              <a href="#home" className="f-display text-[1.02rem] tracking-[0.12em] transition-colors hover:!text-[color:var(--gold-deep)]" style={{ color: "var(--ink)" }}>
-                jmcaris<span className="sumi-accent">.dev</span>
-              </a>
+              <div className="text-center sm:text-left">
+                <a href="#home" className="sumi-signature block transition-colors hover:!text-[color:var(--gold-deep)]">
+                  Jonaidah Caris
+                </a>
+                <a href="#home" className="sumi-brand mt-1 block !text-[1rem] transition-colors hover:!text-[color:var(--gold-deep)]">
+                  jmcaris<span className="sumi-accent">.dev</span>
+                </a>
+              </div>
               <p className="sumi-text-sm !text-[0.72rem]">© {new Date().getFullYear()} All rights reserved.</p>
-              <nav className="flex flex-wrap gap-5">
+              <nav className="flex flex-wrap justify-center gap-5 sm:justify-start">
                 {[
                   ["Projects", "#projects"],
                   ["About", "#about"],
+                  ["Tools", "#tools"],
                   ["Testimonials", "#testimonials"],
                 ].map(([label, href]) => (
                   <a key={label} href={href} className="sumi-label !text-[0.6rem] transition-colors hover:!text-[color:var(--gold-deep)]">
@@ -376,3 +293,5 @@ export function App() {
     </MotionConfig>
   );
 }
+
+export default App;

@@ -35,6 +35,12 @@ jobs:
 
       - name: Build for GitHub Pages
         run: npm run build:github
+        env:
+          # public URL of the chat Worker (a repository *variable*, not a secret)
+          VITE_CHAT_API_URL: ${{ vars.VITE_CHAT_API_URL }}
+
+      - name: SPA fallback for direct page refreshes
+        run: cp apps/web/dist/index.html apps/web/dist/404.html
 
       - name: SPA fallback for direct page refreshes
         run: cp apps/web/dist/index.html apps/web/dist/404.html
