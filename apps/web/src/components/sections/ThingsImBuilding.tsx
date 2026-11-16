@@ -104,7 +104,7 @@ export default function ThingsImBuilding() {
   
 
   return (
-    <section id="projects" className="scroll-mt-12 py-20 sm:py-24 lg:py-28">
+    <section id="projects" className="scroll-mt-12 pb-20 pt-10 sm:pb-24 sm:pt-14 lg:pb-28 lg:pt-16">
       <div className="mx-auto max-w-[1440px]">
         <SectionHeading
           eyebrow="Creative Space"

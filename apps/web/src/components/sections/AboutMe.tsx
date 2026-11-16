@@ -2,27 +2,27 @@ import { Download } from "lucide-react";
 import { Reveal } from "../sumi/Ink";
 import { asset } from "../sumi/hooks";
 
+const skills = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "Shadcn/ui",
+  "React.js",
+  "Vue.js",
+  "Tailwind CSS",
+  "Firebase",
+  "Node.js",
+  "Express.js",
+  "MySQL",
+  "Git/GitHub",
+  "Figma",
+  "Canva",
+  "Jira",
+  "TestRail",
+  "Cypress",
+];
 
-  const skills = [
-    "HTML",
-    "CSS",
-    "JavaScript",
-    "Shadcn/ui",
-    "React.js",
-    "Vue.js",
-    "Tailwind CSS",
-    "Firebase",
-    "Node.js",
-    "Express.js",
-    "MySQL",
-    "Git/GitHub",
-    "Figma",
-    "Canva",
-    "Jira",
-    "TestRail",
-    "Cypress",
-  ];
-  const softSkills = ["Time Management", "Adaptability", "Communication"];
+const softSkills = ["Time Management", "Adaptability", "Communication"];
 
 /*
   Structure note: like Creative, the card wrapper stays the direct child of the section
@@ -35,7 +35,7 @@ export default function AboutMe() {
         <Reveal>
           <div className="sumi-card overflow-hidden p-7 sm:p-12 lg:p-16">
             {/* Section heading */}
-            <div className="mb-10 flex items-center gap-5">
+            <div className="mb-10 flex items-center justify-center gap-5">
               <span className="sumi-pill shrink-0">
                 <span className="sumi-label">About Me</span>
               </span>
@@ -116,7 +116,6 @@ export default function AboutMe() {
                 {/* Skills */}
                 <div className="mt-12">
                   <p className="sumi-label mb-5">Skills</p>
-
                   <div className="flex flex-wrap gap-2.5">
                     {skills.map((skill) => (
                       <span
@@ -130,7 +129,6 @@ export default function AboutMe() {
                   </div>
 
                   <p className="sumi-label mb-4 mt-9">Soft Skills</p>
-
                   <div className="flex flex-wrap gap-2.5">
                     {softSkills.map((skill) => (
                       <span

@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useRef } from "react";
 import type { FocusEvent, KeyboardEvent, PointerEvent } from "react";
 import { ChevronLeft, ChevronRight, Layers3 } from "lucide-react";
@@ -28,7 +29,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Design Teammate",
     role: "Project collaboration",
-     image: asset("images/person3.jpg"),
+    image: asset("images/person3.jpg"),
     quote:
       "Jo listened to feedback and made thoughtful changes. The layouts were clear and consistent, and working together made the whole process smoother.",
     rating: 5,
@@ -37,7 +38,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Somaimah Ampaso",
     role: "Academic project",
-     image: asset("images/person2.jpg"),
+    image: asset("images/person2.jpg"),
     quote:
       "Jo put a lot of care into how the project looked and felt to use. Her attention to the small details helped make the final presentation feel polished.",
     rating: 5,
@@ -78,6 +79,7 @@ const SPEED = 16;
 /** After the person touches, scrolls, or uses an arrow, autoplay waits this long. */
 const IDLE_RESUME_MS = 3500;
 const CARD_GAP = 20;
+
 /*
   Three identical copies sit side by side so the slider can loop in both directions.
   Only copy 1 is real content: copies 0 and 2 are aria-hidden and inert visual duplicates,
@@ -85,7 +87,13 @@ const CARD_GAP = 20;
 */
 const COPIES = [0, 1, 2];
 
-function TestimonialCard({ testimonial, copy }: { testimonial: Testimonial; copy: number }) {
+function TestimonialCard({
+  testimonial,
+  copy,
+}: {
+  testimonial: Testimonial;
+  copy: number;
+}) {
   return (
     <article
       data-testimonial-card
@@ -96,29 +104,67 @@ function TestimonialCard({ testimonial, copy }: { testimonial: Testimonial; copy
       style={{ background: "var(--card-solid)" }}
     >
       <div className="flex items-center justify-between gap-3">
-        <div className="flex gap-1" style={{ color: "var(--gold)" }} aria-label={`${testimonial.rating} out of 5 stars`}>
-          {Array.from({ length: Math.floor(testimonial.rating) }, (_, starIndex) => (
-            <span key={starIndex} aria-hidden="true" className="text-base leading-none">★</span>
-          ))}
+        <div
+          className="flex gap-1"
+          style={{ color: "var(--gold)" }}
+          aria-label={`${testimonial.rating} out of 5 stars`}
+        >
+          {Array.from(
+            { length: Math.floor(testimonial.rating) },
+            (_, starIndex) => (
+              <span
+                key={starIndex}
+                aria-hidden="true"
+                className="text-base leading-none"
+              >
+                ★
+              </span>
+            ),
+          )}
           {testimonial.rating % 1 !== 0 && (
-            <span aria-hidden="true" className="text-base leading-none">½</span>
+            <span
+              aria-hidden="true"
+              className="text-base leading-none"
+            >
+              ½
+            </span>
           )}
         </div>
+
         {testimonial.sample ? (
-          <span className="sumi-label rounded-full border px-2.5 py-1 !text-[0.56rem]" style={{ borderColor: "var(--edge-strong)", color: "var(--ink-mute)" }}>
+          <span
+            className="sumi-label rounded-full border px-2.5 py-1 !text-[0.56rem]"
+            style={{
+              borderColor: "var(--edge-strong)",
+              color: "var(--ink-mute)",
+            }}
+          >
             Sample
           </span>
         ) : (
-          <span className="sumi-label !text-[0.62rem]" style={{ color: "var(--ink-mute)" }}>{testimonial.rating.toFixed(1)}</span>
+          <span
+            className="sumi-label !text-[0.62rem]"
+            style={{ color: "var(--ink-mute)" }}
+          >
+            {testimonial.rating.toFixed(1)}
+          </span>
         )}
       </div>
+
       <p className="sumi-text mt-6 min-h-[132px] flex-1 !text-[0.9rem] !leading-[1.95]">
         “{testimonial.quote}”
       </p>
-      <div className="mt-6 flex items-center gap-4 border-t pt-5" style={{ borderColor: "var(--edge)" }}>
+
+      <div
+        className="mt-6 flex items-center gap-4 border-t pt-5"
+        style={{ borderColor: "var(--edge)" }}
+      >
         <div
           className="h-12 w-12 shrink-0 overflow-hidden rounded-full border p-0.5 sm:h-14 sm:w-14"
-          style={{ borderColor: "var(--edge-strong)", background: "var(--card-solid)" }}
+          style={{
+            borderColor: "var(--edge-strong)",
+            background: "var(--card-solid)",
+          }}
         >
           {testimonial.image ? (
             <img
@@ -129,14 +175,25 @@ function TestimonialCard({ testimonial, copy }: { testimonial: Testimonial; copy
               loading="lazy"
             />
           ) : (
-            <div className="f-display flex h-full w-full items-center justify-center rounded-full text-sm" style={{ color: "var(--gold-deep)" }}>
+            <div
+              className="f-body flex h-full w-full items-center justify-center rounded-full text-[0.8rem] !font-medium"
+              style={{ color: "var(--gold-deep)" }}
+            >
               {testimonial.initials}
             </div>
           )}
         </div>
+
         <div className="min-w-0">
-          <p className="f-display truncate !text-[1.05rem] tracking-[0.08em]" style={{ color: "var(--ink)" }}>{testimonial.name}</p>
-          <p className="sumi-text-sm mt-0.5 !text-[0.72rem]">{testimonial.role}</p>
+          <p
+            className="f-body truncate !text-[0.92rem] !font-medium tracking-[0.02em]"
+            style={{ color: "var(--ink)" }}
+          >
+            {testimonial.name}
+          </p>
+          <p className="sumi-text-sm mt-0.5 !text-[0.72rem]">
+            {testimonial.role}
+          </p>
         </div>
       </div>
     </article>
@@ -145,7 +202,13 @@ function TestimonialCard({ testimonial, copy }: { testimonial: Testimonial; copy
 
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, moved: false, startX: 0, startLeft: 0 });
+  const drag = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+    startLeft: 0,
+  });
+
   const auto = useRef({
     pos: 0,
     lastSet: 0,
@@ -166,23 +229,34 @@ export default function Testimonials() {
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+
     const st = auto.current;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
 
     const measure = () => {
       const first = track.querySelector<HTMLElement>('[data-copy="0"]');
       const second = track.querySelector<HTMLElement>('[data-copy="1"]');
-      if (first && second) st.setW = second.offsetLeft - first.offsetLeft;
+
+      if (first && second) {
+        st.setW = second.offsetLeft - first.offsetLeft;
+      }
     };
-    const jump = (x: number) => track.scrollTo({ left: x, behavior: "instant" });
+
+    const jump = (x: number) =>
+      track.scrollTo({ left: x, behavior: "instant" });
 
     /** Keep the view inside the middle copy's neighbourhood; the content is identical, so the jump is invisible. */
     const normalize = () => {
       const w = st.setW;
       if (!w) return;
+
       const x = track.scrollLeft;
+
       if (x < w * 0.5) jump(x + w);
       else if (x >= w * 2) jump(x - w);
+
       st.pos = track.scrollLeft;
       st.lastSet = st.pos;
     };
@@ -194,39 +268,59 @@ export default function Testimonials() {
     const ro = new ResizeObserver(() => {
       const before = st.setW;
       measure();
+
       if (before && st.setW && before !== st.setW) {
         jump(st.setW + ((track.scrollLeft - before) % st.setW));
         st.pos = st.lastSet = track.scrollLeft;
       }
     });
+
     ro.observe(track);
 
     const io = new IntersectionObserver(([entry]) => {
       st.visible = entry.isIntersecting;
     });
+
     io.observe(track);
 
     /** After a swipe, glide to the nearest card start so cards never rest half-cut. */
     const snapToNearest = () => {
       const trackLeft = track.getBoundingClientRect().left;
       let best: { x: number; d: number } | null = null;
-      track.querySelectorAll<HTMLElement>("[data-testimonial-card]").forEach((card) => {
-        const x = card.getBoundingClientRect().left - trackLeft + track.scrollLeft;
-        const d = Math.abs(x - track.scrollLeft);
-        if (!best || d < best.d) best = { x, d };
-      });
+
+      track
+        .querySelectorAll<HTMLElement>("[data-testimonial-card]")
+        .forEach((card) => {
+          const x =
+            card.getBoundingClientRect().left -
+            trackLeft +
+            track.scrollLeft;
+
+          const d = Math.abs(x - track.scrollLeft);
+
+          if (!best || d < best.d) {
+            best = { x, d };
+          }
+        });
+
       const target = best as { x: number; d: number } | null;
-      if (target && target.d > 2) track.scrollTo({ left: target.x, behavior: "smooth" });
+
+      if (target && target.d > 2) {
+        track.scrollTo({ left: target.x, behavior: "smooth" });
+      }
     };
 
     let settle = 0;
+
     const onSettled = () => {
       normalize();
+
       if (st.snapAfter && !st.touching) {
         st.snapAfter = false;
         snapToNearest();
       }
     };
+
     const onScroll = () => {
       // Our own writes land within a pixel or two of lastSet; anything else is the person scrolling.
       if (Math.abs(track.scrollLeft - st.lastSet) > 3) {
@@ -235,25 +329,41 @@ export default function Testimonials() {
         settle = window.setTimeout(onSettled, 160);
       }
     };
+
     track.addEventListener("scroll", onScroll, { passive: true });
 
     let raf = 0;
     let last = performance.now();
+
     const tick = (now: number) => {
       const dt = Math.min(64, now - last) / 1000;
       last = now;
+
       const paused =
-        st.hover || st.focus || st.touching || now < st.idleUntil || !st.visible || document.hidden || reduceMotion.matches;
+        st.hover ||
+        st.focus ||
+        st.touching ||
+        now < st.idleUntil ||
+        !st.visible ||
+        document.hidden ||
+        reduceMotion.matches;
+
       if (paused) {
         st.pos = track.scrollLeft;
       } else if (st.setW) {
         st.pos += SPEED * dt;
-        if (st.pos >= st.setW * 2) st.pos -= st.setW;
+
+        if (st.pos >= st.setW * 2) {
+          st.pos -= st.setW;
+        }
+
         st.lastSet = st.pos;
         track.scrollLeft = st.pos;
       }
+
       raf = requestAnimationFrame(tick);
     };
+
     raf = requestAnimationFrame(tick);
 
     return () => {
@@ -268,10 +378,18 @@ export default function Testimonials() {
   const step = useCallback(
     (direction: 1 | -1) => {
       const track = trackRef.current;
-      const card = track?.querySelector<HTMLElement>("[data-testimonial-card]");
+      const card = track?.querySelector<HTMLElement>(
+        "[data-testimonial-card]",
+      );
+
       if (!track || !card) return;
+
       holdAutoplay();
-      track.scrollBy({ left: direction * (card.getBoundingClientRect().width + CARD_GAP), behavior: "smooth" });
+
+      track.scrollBy({
+        left: direction * (card.getBoundingClientRect().width + CARD_GAP),
+        behavior: "smooth",
+      });
     },
     [holdAutoplay],
   );
@@ -280,44 +398,67 @@ export default function Testimonials() {
     (e: PointerEvent<HTMLDivElement>) => {
       const track = trackRef.current;
       if (!track) return;
+
       if (e.pointerType !== "mouse") {
         // Touch and pen use native scrolling and momentum; autoplay stands still meanwhile.
         auto.current.touching = true;
         auto.current.snapAfter = true;
         return;
       }
+
       if (e.button !== 0) return;
-      drag.current = { active: true, moved: false, startX: e.clientX, startLeft: track.scrollLeft };
+
+      drag.current = {
+        active: true,
+        moved: false,
+        startX: e.clientX,
+        startLeft: track.scrollLeft,
+      };
     },
     [],
   );
 
-  const onPointerMove = useCallback((e: PointerEvent<HTMLDivElement>) => {
-    const track = trackRef.current;
-    const d = drag.current;
-    if (!track || !d.active) return;
-    const dx = e.clientX - d.startX;
-    if (!d.moved && Math.abs(dx) < DRAG_THRESHOLD) return;
-    if (!d.moved) {
-      d.moved = true;
-      track.classList.add("is-dragging");
-      track.setPointerCapture(e.pointerId);
-    }
-    track.scrollLeft = d.startLeft - dx;
-  }, []);
+  const onPointerMove = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      const track = trackRef.current;
+      const d = drag.current;
+
+      if (!track || !d.active) return;
+
+      const dx = e.clientX - d.startX;
+
+      if (!d.moved && Math.abs(dx) < DRAG_THRESHOLD) return;
+
+      if (!d.moved) {
+        d.moved = true;
+        track.classList.add("is-dragging");
+        track.setPointerCapture(e.pointerId);
+      }
+
+      track.scrollLeft = d.startLeft - dx;
+    },
+    [],
+  );
 
   const endPointer = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
       const track = trackRef.current;
       const d = drag.current;
+
       if (e.pointerType !== "mouse") {
         auto.current.touching = false;
         holdAutoplay();
       }
+
       if (!track || !d.active) return;
+
       d.active = false;
+
       if (d.moved) {
-        if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId);
+        if (track.hasPointerCapture(e.pointerId)) {
+          track.releasePointerCapture(e.pointerId);
+        }
+
         track.classList.remove("is-dragging");
         holdAutoplay();
       }
@@ -328,6 +469,7 @@ export default function Testimonials() {
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+
       e.preventDefault();
       step(e.key === "ArrowRight" ? 1 : -1);
     },
@@ -336,19 +478,33 @@ export default function Testimonials() {
 
   // Pause while the pointer is over the slider or arrows, or while keyboard focus is inside.
   const onFocus = (e: FocusEvent<HTMLDivElement>) => {
-    if (e.target.matches(":focus-visible")) auto.current.focus = true;
+    if (e.target.matches(":focus-visible")) {
+      auto.current.focus = true;
+    }
   };
+
   const onBlur = (e: FocusEvent<HTMLDivElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) auto.current.focus = false;
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+      auto.current.focus = false;
+    }
   };
 
   return (
-    <section id="testimonials" className="scroll-mt-24 py-16 sm:py-20 lg:py-24">
+    <section
+      id="testimonials"
+      className="scroll-mt-24 py-16 sm:py-20 lg:py-24"
+    >
       <Reveal>
         <SectionHeading
           align="center"
           eyebrow="TESTIMONIALS"
-          icon={<Layers3 size={14} style={{ color: "var(--gold-deep)" }} aria-hidden="true" />}
+          icon={
+            <Layers3
+              size={14}
+              style={{ color: "var(--gold-deep)" }}
+              aria-hidden="true"
+            />
+          }
           subtitle="A few reflections on collaboration, creativity, and the work we build together. Cards tagged Sample are demo placeholders, not real endorsements."
         >
           Words from <span className="sumi-accent">others.</span>
@@ -356,7 +512,9 @@ export default function Testimonials() {
 
         <div
           onPointerEnter={(e) => {
-            if (e.pointerType === "mouse") auto.current.hover = true;
+            if (e.pointerType === "mouse") {
+              auto.current.hover = true;
+            }
           }}
           onPointerLeave={(e) => {
             if (e.pointerType === "mouse") {
@@ -382,17 +540,40 @@ export default function Testimonials() {
           >
             {COPIES.map((copy) =>
               testimonials.map((testimonial) => (
-                <TestimonialCard key={`${copy}-${testimonial.name}`} testimonial={testimonial} copy={copy} />
+                <TestimonialCard
+                  key={`${copy}-${testimonial.name}`}
+                  testimonial={testimonial}
+                  copy={copy}
+                />
               )),
             )}
           </div>
 
           <div className="mt-5 flex items-center justify-center gap-3 sm:justify-end">
-            <button type="button" className="slider-arrow" aria-label="Previous testimonial" onClick={() => step(-1)}>
-              <ChevronLeft className="size-[18px]" strokeWidth={1.6} aria-hidden="true" />
+            <button
+              type="button"
+              className="slider-arrow"
+              aria-label="Previous testimonial"
+              onClick={() => step(-1)}
+            >
+              <ChevronLeft
+                className="size-[18px]"
+                strokeWidth={1.6}
+                aria-hidden="true"
+              />
             </button>
-            <button type="button" className="slider-arrow" aria-label="Next testimonial" onClick={() => step(1)}>
-              <ChevronRight className="size-[18px]" strokeWidth={1.6} aria-hidden="true" />
+
+            <button
+              type="button"
+              className="slider-arrow"
+              aria-label="Next testimonial"
+              onClick={() => step(1)}
+            >
+              <ChevronRight
+                className="size-[18px]"
+                strokeWidth={1.6}
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>

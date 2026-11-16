@@ -31,3 +31,9 @@ dist-ssr
 
 # typescript
 *.tsbuildinfo
+
+# keep the example files tracked
+!.env.example
+!.dev.vars.example
+.dev.vars
+.wrangler
