@@ -104,11 +104,9 @@ export function App() {
                 </span>
               </div>
 
-              <h1 className="sumi-name max-w-xl">
-                <span className="block">Jonaidah</span> <span className="sumi-name-accent block">Caris</span>
-              </h1>
+              <h1 className="sr-only">Jonaidah Caris</h1>
 
-              <p className="sumi-text mt-8 max-w-md !font-medium !text-[1rem] !leading-[1.9] sm:text-[1.05rem]">
+              <p className="sumi-text mt-6 max-w-md !font-medium !text-[1rem] !leading-[1.9] sm:text-[1.05rem]">
                 Hi, I'm Jonaidah Caris. I enjoy creating thoughtful digital
                 experiences through frontend development, clean interfaces,
                 and visual design.

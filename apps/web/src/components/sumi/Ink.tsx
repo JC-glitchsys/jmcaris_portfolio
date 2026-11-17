@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, type Variants } from "framer-motion";
 
-/** One imperfect, hand-drawn enso (viewBox 0 0 400 340). */
-export const ENSO_PATH =
-  "M262 40 C150 -5 20 70 28 170 C36 270 150 330 250 300 C340 272 372 190 352 120 C338 72 300 44 262 52";
-
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /* ───────── Thin ink brush divider with a gold centre ───────── */
@@ -68,7 +64,7 @@ export function SectionHeading({
   icon,
   children,
   subtitle,
-  align = "left",
+  align = "center",
 }: {
   eyebrow: string;
   icon?: ReactNode;

@@ -1,12 +1,27 @@
 
+import type { CSSProperties } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { ENSO_PATH } from "./Ink";
 import { asset, useDesktop, usePrefersReducedMotion } from "./hooks";
 
-const INK = { color: "var(--brush)" } as const;
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-/** Imperfect hand-painted Enso behind the ninja portrait. */
+/** The hand-painted Enso: a transparent brush circle, tinted with the theme's ink colour. */
+export const ENSO_MASK = (): CSSProperties => {
+  const url = `url(${asset("images/enso.webp")})`;
+  return {
+    background: "var(--brush)",
+    WebkitMaskImage: url,
+    maskImage: url,
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+  };
+};
+
+/** Quiet Enso behind the ninja portrait: it settles in softly and stays in the background. */
 export function HeroEnso({
   className = "",
   play,
@@ -14,29 +29,16 @@ export function HeroEnso({
   className?: string;
   play: boolean;
 }) {
+  const reduce = usePrefersReducedMotion();
   return (
-    <svg
-      viewBox="0 0 400 340"
+    <motion.div
       aria-hidden="true"
-      className={`pointer-events-none ${className}`}
-      style={{ ...INK, opacity: 0.24 }}
-    >
-      <motion.path
-        d={ENSO_PATH}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="23"
-        strokeLinecap="round"
-        className="sumi-dry"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: play ? 1 : 0 }}
-        transition={{
-          duration: 2.4,
-          delay: 0.25,
-          ease: [0.45, 0, 0.2, 1],
-        }}
-      />
-    </svg>
+      className={`pointer-events-none aspect-square ${className}`}
+      style={ENSO_MASK()}
+      initial={{ opacity: 0, rotate: -8 }}
+      animate={play ? { opacity: 0.4, rotate: 0 } : { opacity: 0, rotate: -8 }}
+      transition={{ duration: reduce ? 0 : 2.2, delay: reduce ? 0 : 0.25, ease: EASE }}
+    />
   );
 }
 
@@ -140,25 +142,20 @@ export default function HeroSumi({ play }: { play: boolean }) {
         }}
       />
 
-      {/* Red sun */}
+      {/* Red-orange watercolor moon: the real painted asset, untouched edges and texture */}
       <motion.div
-        className="absolute right-[10%] top-[7%] md:right-[11%] md:top-[11%]"
+        className="absolute right-[7%] top-[4%] md:right-[9%] md:top-[8%]"
         style={{ y: desktop && !reduce ? sunY : 0 }}
       >
-        <motion.div
-          className="sumi-rough size-12 rounded-full sm:size-16"
-          style={{ background: "var(--sun)" }}
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={
-            play
-              ? { opacity: 0.9, scale: 1 }
-              : { opacity: 0, scale: 0.6 }
-          }
-          transition={{
-            duration: 1.6,
-            delay: 0.3,
-            ease: EASE,
-          }}
+        <motion.img
+          src={asset("images/moon.webp")}
+          alt=""
+          draggable={false}
+          decoding="async"
+          className="block h-auto w-[34px] select-none sm:w-[46px] md:w-[60px]"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={play ? { opacity: 0.88, scale: 1 } : { opacity: 0, scale: 0.9 }}
+          transition={{ duration: 1.8, delay: 0.3, ease: EASE }}
         />
       </motion.div>
 
