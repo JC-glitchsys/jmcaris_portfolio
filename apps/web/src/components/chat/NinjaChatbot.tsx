@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Archive, History as HistoryIcon, MoreHorizontal, Trash2 } from "lucide-react";
 
 import { asset } from "../sumi/hooks";
 
@@ -8,18 +9,18 @@ import { asset } from "../sumi/hooks";
  * The browser only talks to our own serverless endpoint (VITE_CHAT_API_URL). The Gemini key
  * and the knowledge base live in that endpoint (see /workers/gemini-chat), never in this bundle.
  *
- * The character is the portfolio's own ninja artwork (ninja-body + ninja-hat share one canvas, exactly as in
- * the hero). She leans on the top edge of the panel, so the panel reads as part of the same ink world.
+ * The character is the portfolio's own ninja artwork, kept in the floating launcher while the panel stays minimal.
  */
 
 type Role = "user" | "assistant";
 type Message = { id: number; role: Role; text: string; error?: boolean };
+type ArchivedChat = { id: string; title: string; archivedAt: string; messages: Message[] };
 
-const INK = "#1A1A1A";
-const PAPER = "#F7F3EA";
-const SHEET = "#FFFDF8";
-const GOLD = "#C9A96A";
-const EDGE = "rgba(122, 106, 82, 0.28)";
+const INK = "#202124";
+const PAPER = "#FAFAFA";
+const SHEET = "#FFFFFF";
+const GOLD = "#D8DADF";
+const EDGE = "#E7E8EB";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const GREETING =
@@ -29,34 +30,11 @@ const ERROR_TEXT = "Naubusan ako ng ink, try mo ulit!";
 const QUICK_REPLIES = ["Anong skills mo?", "Anong projects mo?", "Available ka ba for work?"];
 const MAX_INPUT = 300;
 const TIMEOUT_MS = 25_000;
+const ARCHIVE_KEY = "ninja-chat-archives";
 
 const API_URL: string =
   (import.meta.env.VITE_CHAT_API_URL as string | undefined)?.trim() ||
   (import.meta.env.DEV ? "http://localhost:8787" : "");
-
-/** The portfolio's ninja girl: body and hat are separate layers of one 900 x 984 canvas. */
-function NinjaCharacter({ className = "" }: { className?: string }) {
-  return (
-    <div className={`relative ${className}`} style={{ aspectRatio: "900 / 984" }} aria-hidden="true">
-      <img
-        src={asset("images/ninja-body.webp")}
-        alt=""
-        width={900}
-        height={984}
-        draggable={false}
-        className="absolute inset-0 size-full select-none object-contain"
-      />
-      <img
-        src={asset("images/ninja-hat.webp")}
-        alt=""
-        width={900}
-        height={984}
-        draggable={false}
-        className="absolute inset-0 size-full select-none object-contain"
-      />
-    </div>
-  );
-}
 
 export default function NinjaChatbot() {
   const reduce = useReducedMotion();
@@ -65,6 +43,20 @@ export default function NinjaChatbot() {
   const [messages, setMessages] = useState<Message[]>([{ id: 0, role: "assistant", text: GREETING }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [archivedChats, setArchivedChats] = useState<ArchivedChat[]>(() => {
+    try {
+      const saved = window.localStorage.getItem(ARCHIVE_KEY);
+      if (!saved) return [];
+      const parsed = JSON.parse(saved) as unknown;
+      return Array.isArray(parsed) ? (parsed as ArchivedChat[]) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showArchives, setShowArchives] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<"archive" | "delete" | null>(null);
 
   const nextId = useRef(1);
   const listRef = useRef<HTMLDivElement>(null);
@@ -95,6 +87,18 @@ export default function NinjaChatbot() {
     return () => {
       unmounted.current = true;
       abortRef.current?.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    let hideTimer: number | undefined;
+    const interval = window.setInterval(() => {
+      setShowPrompt(true);
+      hideTimer = window.setTimeout(() => setShowPrompt(false), 5_000);
+    }, 60_000);
+    return () => {
+      window.clearInterval(interval);
+      if (hideTimer !== undefined) window.clearTimeout(hideTimer);
     };
   }, []);
 
@@ -156,6 +160,40 @@ export default function NinjaChatbot() {
   const showQuickReplies = messages.length === 1 && !loading;
   const canSend = !loading && input.trim().length > 0;
 
+  const persistArchives = (next: ArchivedChat[]) => {
+    setArchivedChats(next);
+    try {
+      window.localStorage.setItem(ARCHIVE_KEY, JSON.stringify(next));
+    } catch (err) {
+      console.warn("[NinjaChatbot] Could not save chat archive", err);
+    }
+  };
+
+  const confirmHistoryAction = () => {
+    if (confirmAction === "archive") {
+      const conversation = messages.filter((message) => message.id !== 0);
+      if (conversation.length) {
+        const firstUserMessage = conversation.find((message) => message.role === "user");
+        persistArchives([
+          {
+            id: `${Date.now()}`,
+            title: firstUserMessage?.text ?? "Chat with Jonaidah",
+            archivedAt: new Date().toISOString(),
+            messages: conversation,
+          },
+          ...archivedChats,
+        ]);
+      }
+      setMessages([{ id: 0, role: "assistant", text: GREETING }]);
+      setShowArchives(false);
+    } else if (confirmAction === "delete") {
+      persistArchives([]);
+      setMessages([{ id: 0, role: "assistant", text: GREETING }]);
+      setShowArchives(false);
+    }
+    setConfirmAction(null);
+  };
+
   const panelHidden = reduce ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 };
   const panelShown = reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 };
   const bubbleIn = reduce ? { opacity: 0 } : { opacity: 0, y: 6 };
@@ -163,13 +201,31 @@ export default function NinjaChatbot() {
 
   return (
     <div
-      className="fixed z-[65] flex flex-col items-end gap-3"
+      className="chatbot-font fixed z-[65] flex flex-col items-end gap-3"
       style={{
         right: "max(1rem, env(safe-area-inset-right))",
         bottom: "max(1rem, env(safe-area-inset-bottom))",
       }}
       onKeyDown={onKeyDown}
     >
+      <AnimatePresence>
+        {showPrompt && !open && (
+          <motion.div
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }}
+            transition={{ duration: 0.2 }}
+            className="absolute bottom-[72px] right-0 z-10 w-[min(260px,calc(100vw-2rem))]"
+          >
+            <div className="relative rounded-2xl border border-[#E7E8EB] bg-white px-4 py-3 pr-9 shadow-[0_10px_30px_-14px_rgba(20,24,32,0.3)]">
+              <button type="button" onClick={() => { setShowPrompt(false); setOpen(true); }} className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780]">
+                <span className="block text-xs font-semibold text-[#202124]">Hi! Have a question?</span>
+                <span className="mt-1 block text-[0.68rem] leading-relaxed text-[#777B83]">Ask me about Jonaidah’s skills and projects.</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {open && (
           <motion.section
@@ -181,7 +237,7 @@ export default function NinjaChatbot() {
             animate={panelShown}
             exit={panelHidden}
             transition={{ duration: reduce ? 0.12 : 0.32, ease: EASE }}
-            className="relative mt-[62px]"
+            className="relative"
             style={{
               width: "344px",
               maxWidth: "calc(100vw - 2rem)",
@@ -189,34 +245,35 @@ export default function NinjaChatbot() {
               transformOrigin: "bottom right",
             }}
           >
-            {/* She leans on the top edge of the panel: only her hat, face and collar show */}
             <div
-              aria-hidden="true"
-              className="pointer-events-none absolute right-5 z-10 w-[78px] overflow-hidden"
-              style={{ bottom: "calc(100% - 1px)", height: "66px" }}
-            >
-              <NinjaCharacter className="w-full" />
-            </div>
-
-            <div
-              className="relative flex size-full flex-col overflow-hidden rounded-[20px]"
+              className="relative flex size-full flex-col overflow-hidden rounded-[18px]"
               style={{
                 background: PAPER,
                 color: INK,
-                border: `1px solid ${GOLD}`,
-                boxShadow: "0 24px 44px -22px rgba(26,26,26,0.45), 0 2px 6px rgba(26,26,26,0.06)",
+                border: `1px solid ${EDGE}`,
+                boxShadow: "0 18px 48px -24px rgba(20,24,32,0.28), 0 2px 8px rgba(20,24,32,0.04)",
               }}
             >
               {/* header */}
-              <header className="relative px-5 pb-3.5 pt-4" style={{ borderBottom: `1px solid ${EDGE}` }}>
-                <div className="flex items-start justify-between gap-3 pr-[88px]">
+              <header className="relative flex items-center justify-between gap-2 px-3.5 py-3" style={{ borderBottom: `1px solid ${EDGE}` }}>
+                <div className="flex min-w-0 items-center gap-2.5 pr-28">
+                  <div className="relative size-11 shrink-0 rounded-full p-[2px]" style={{ background: "linear-gradient(145deg, #D8DADF, #F1E5C9)" }}>
+                    <img
+                      src={asset("images/ninja-avatar.png")}
+                      alt=""
+                      width={192}
+                      height={192}
+                      draggable={false}
+                      className="size-full rounded-full border-2 border-white object-cover"
+                    />
+                    <span aria-hidden="true" className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-white" style={{ background: "#718A72" }} />
+                  </div>
                   <div className="min-w-0">
-                    <h2 className="f-display truncate text-[1.28rem] !font-medium leading-tight tracking-[0.02em]">
-                      Ninja Girl Assistant
+                    <h2 className="truncate text-[0.94rem] font-semibold leading-tight tracking-[-0.02em]">
+                      Jonaidah Caris
                     </h2>
-                    <p className="f-body mt-1 flex items-center gap-1.5 text-[0.68rem] !leading-none tracking-[0.04em]" style={{ color: "#514B43" }}>
-                      <span aria-hidden="true" className="size-1.5 rounded-full" style={{ background: GOLD }} />
-                      Online • Gemini AI
+                    <p className="mt-1 truncate text-[0.68rem] leading-tight" style={{ color: "#777B83" }}>
+                      Ninja Girl Assistant <span aria-hidden="true">·</span> Portfolio guide
                     </p>
                   </div>
                 </div>
@@ -224,21 +281,54 @@ export default function NinjaChatbot() {
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label="Isara ang chat"
-                  className="absolute right-3 top-3 z-20 flex size-7 items-center justify-center rounded-full text-[0.8rem] transition-colors duration-200 hover:bg-[#EAE3D6] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#8A6B28] motion-reduce:transition-none"
-                  style={{ color: INK }}
+                  className="absolute right-3 top-1/2 z-20 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[0.8rem] transition-colors duration-200 hover:bg-[#F0F1F3] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#727780] motion-reduce:transition-none"
+                  style={{ color: "#777B83" }}
                 >
                   <span aria-hidden="true">✕</span>
                 </button>
-                {/* a short brush stroke, then a gold hairline */}
-                <span
-                  aria-hidden="true"
-                  className="absolute -bottom-px left-5 h-[2px] w-9 rounded-full"
-                  style={{ background: INK, opacity: 0.8 }}
-                />
+                <div className="absolute right-11 top-1/2 z-20 flex -translate-y-1/2 items-center gap-0.5">
+                  <button type="button" onClick={() => setShowArchives((value) => !value)} aria-label={showArchives ? "Return to chat" : "View archived chats"} title="Archived chats" className="flex size-8 items-center justify-center rounded-full text-[#777B83] transition-colors hover:bg-[#F0F1F3] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#727780]">
+                    <HistoryIcon size={16} aria-hidden="true" />
+                  </button>
+                  <button type="button" onClick={() => setShowActions((value) => !value)} aria-label="More chat actions" aria-expanded={showActions} title="More actions" className="flex size-8 items-center justify-center rounded-full text-[#777B83] transition-colors hover:bg-[#F0F1F3] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#727780]">
+                    <MoreHorizontal size={17} aria-hidden="true" />
+                  </button>
+                  {showActions && (
+                    <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-[#E7E8EB] bg-white p-1.5 shadow-xl">
+                      <button type="button" onClick={() => { setShowActions(false); setConfirmAction("archive"); }} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-[#34363B] transition-colors hover:bg-[#F4F5F6]">
+                        <Archive size={15} aria-hidden="true" className="text-[#777B83]" /> Archive conversation
+                      </button>
+                      <button type="button" onClick={() => { setShowActions(false); setConfirmAction("delete"); }} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-[#A43C3C] transition-colors hover:bg-[#FBF2F2]">
+                        <Trash2 size={15} aria-hidden="true" /> Delete all history
+                      </button>
+                    </div>
+                  )}
+                </div>
               </header>
 
               {/* messages */}
-              <div
+              {showArchives ? (
+                <div className="flex-1 overflow-y-auto px-4 py-4" aria-label="Archived conversations">
+                  <div className="mb-3 flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Archived chats</h3>
+                    <button type="button" onClick={() => setShowArchives(false)} className="text-xs text-[#777B83] hover:text-[#202124]">Back to chat</button>
+                  </div>
+                  {archivedChats.length ? (
+                    <ul className="space-y-2">
+                      {archivedChats.map((chat) => (
+                        <li key={chat.id}>
+                          <button type="button" onClick={() => { setMessages(chat.messages); nextId.current = Math.max(0, ...chat.messages.map((message) => message.id)) + 1; setShowArchives(false); }} className="w-full rounded-xl border border-[#E7E8EB] bg-white px-3.5 py-3 text-left transition-colors hover:bg-[#F5F5F5]">
+                            <span className="block truncate text-xs font-medium">{chat.title}</span>
+                            <span className="mt-1 block text-[0.65rem] text-[#777B83]">{new Date(chat.archivedAt).toLocaleDateString()}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="rounded-xl border border-dashed border-[#D8DADF] px-4 py-6 text-center text-xs text-[#777B83]">No archived chats yet.</p>
+                  )}
+                </div>
+              ) : <div
                 ref={listRef}
                 role="log"
                 aria-live="polite"
@@ -254,10 +344,10 @@ export default function NinjaChatbot() {
                     className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
                   >
                     <p
-                      className="f-body max-w-[86%] whitespace-pre-wrap break-words px-3.5 py-2.5 text-[0.82rem] !leading-[1.6]"
+                      className="max-w-[86%] whitespace-pre-wrap break-words px-3.5 py-2.5 text-[0.8rem] leading-[1.6]"
                       style={
                         m.role === "user"
-                          ? { background: INK, color: "#FFFFFF", borderRadius: "16px 16px 4px 16px" }
+                          ? { background: "#25272B", color: "#FFFFFF", borderRadius: "16px 16px 4px 16px" }
                           : {
                               background: SHEET,
                               color: INK,
@@ -280,8 +370,8 @@ export default function NinjaChatbot() {
                     className="flex justify-start"
                   >
                     <p
-                      className="f-body flex items-center gap-2 px-3.5 py-2.5 text-[0.78rem] italic !leading-none"
-                      style={{ background: SHEET, color: "#514B43", border: `1px solid ${EDGE}`, borderRadius: "16px 16px 16px 4px" }}
+                      className="flex items-center gap-2 px-3.5 py-2.5 text-[0.76rem] leading-none"
+                      style={{ background: SHEET, color: "#777B83", border: `1px solid ${EDGE}`, borderRadius: "16px 16px 16px 4px" }}
                     >
                       {LOADING_TEXT}
                       <span aria-hidden="true" className="flex items-center gap-1">
@@ -289,7 +379,7 @@ export default function NinjaChatbot() {
                           <motion.span
                             key={i}
                             className="size-1 rounded-full"
-                            style={{ background: INK }}
+                            style={{ background: "#777B83" }}
                             animate={reduce ? { opacity: 0.55 } : { opacity: [0.25, 0.8, 0.25] }}
                             transition={reduce ? undefined : { duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.18 }}
                           />
@@ -306,20 +396,20 @@ export default function NinjaChatbot() {
                         key={q}
                         type="button"
                         onClick={() => void send(q)}
-                        className="f-body rounded-full px-3.5 py-1.5 text-[0.74rem] !leading-snug transition-colors duration-200 hover:border-[#8A6B28] hover:bg-[#EFE8D8] active:bg-[#E6DDCA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8A6B28] motion-reduce:transition-none"
-                        style={{ border: `1px solid ${GOLD}`, color: INK, background: "transparent" }}
+                        className="rounded-full px-3.5 py-1.5 text-[0.7rem] leading-snug transition-colors duration-200 hover:border-[#B8BBC2] hover:bg-[#F3F4F6] active:bg-[#ECEEF1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780] motion-reduce:transition-none"
+                        style={{ border: `1px solid ${GOLD}`, color: INK, background: "#FFFFFF" }}
                       >
                         {q}
                       </button>
                     ))}
                   </div>
                 )}
-              </div>
+              </div>}
 
               {/* input */}
-              <form onSubmit={onSubmit} className="px-3.5 pb-3.5 pt-1">
+              {!showArchives && <form onSubmit={onSubmit} className="px-3.5 pb-3.5 pt-1">
                 <div
-                  className="flex items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 transition-shadow duration-200 focus-within:shadow-[0_0_0_2px_rgba(138,107,40,0.45)] motion-reduce:transition-none"
+                  className="flex items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 transition-shadow duration-200 focus-within:shadow-[0_0_0_2px_rgba(115,120,130,0.18)] motion-reduce:transition-none"
                   style={{ background: SHEET, border: `1px solid ${EDGE}` }}
                 >
                   <label htmlFor={`${panelId}-input`} className="sr-only">
@@ -334,19 +424,32 @@ export default function NinjaChatbot() {
                     placeholder="Tanong ka..."
                     autoComplete="off"
                     disabled={loading}
-                    className="f-body min-w-0 flex-1 bg-transparent py-1.5 text-[0.82rem] !leading-none outline-none placeholder:text-[#6b645a] disabled:opacity-60"
+                    className="min-w-0 flex-1 bg-transparent py-1.5 text-[0.8rem] leading-none outline-none placeholder:text-[#8B8F97] disabled:opacity-60"
                     style={{ color: INK }}
                   />
                   <button
                     type="submit"
                     disabled={!canSend}
-                    className="f-body rounded-full px-4 py-2 text-[0.74rem] font-semibold !leading-none tracking-[0.06em] transition-[background-color,opacity] duration-200 hover:bg-[#2E2A25] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8A6B28] disabled:opacity-40 disabled:hover:bg-[#1A1A1A] motion-reduce:transition-none"
-                    style={{ background: INK, color: GOLD }}
+                    className="rounded-full px-4 py-2 text-[0.72rem] font-medium leading-none transition-[background-color,opacity] duration-200 hover:bg-[#3B3E44] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780] disabled:opacity-40 disabled:hover:bg-[#25272B] motion-reduce:transition-none"
+                    style={{ background: "#25272B", color: "#FFFFFF" }}
                   >
                     Send
                   </button>
                 </div>
-              </form>
+              </form>}
+
+              {confirmAction && (
+                <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/20 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConfirmAction(null); }}>
+                  <section role="alertdialog" aria-modal="true" aria-labelledby="chat-confirm-title" aria-describedby="chat-confirm-description" className="w-full max-w-[280px] rounded-2xl border border-[#E7E8EB] bg-white p-5 shadow-2xl">
+                    <h2 id="chat-confirm-title" className="text-sm font-semibold text-[#202124]">{confirmAction === "archive" ? "Archive this chat?" : "Delete all chat history?"}</h2>
+                    <p id="chat-confirm-description" className="mt-2 text-xs leading-relaxed text-[#777B83]">{confirmAction === "archive" ? "This conversation will be saved in Archived chats and a fresh chat will start." : "This removes this conversation and all archived chats from this browser. This cannot be undone."}</p>
+                    <div className="mt-5 flex justify-end gap-2">
+                      <button type="button" onClick={() => setConfirmAction(null)} className="rounded-full px-3.5 py-2 text-xs font-medium text-[#646870] hover:bg-[#F3F4F6]">Cancel</button>
+                      <button type="button" onClick={confirmHistoryAction} className="rounded-full px-3.5 py-2 text-xs font-medium text-white" style={{ background: confirmAction === "delete" ? "#B34242" : "#25272B" }}>{confirmAction === "archive" ? "Archive chat" : "Delete history"}</button>
+                    </div>
+                  </section>
+                </div>
+              )}
             </div>
           </motion.section>
         )}
@@ -356,7 +459,7 @@ export default function NinjaChatbot() {
       <button
         ref={buttonRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => { setShowPrompt(false); setOpen((v) => !v); }}
         aria-label={open ? "Isara ang chat" : "Buksan ang chat with Ninja Girl Assistant"}
         aria-expanded={open}
         aria-controls={panelId}

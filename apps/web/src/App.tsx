@@ -104,9 +104,11 @@ export function App() {
                 </span>
               </div>
 
-              <h1 className="sr-only">Jonaidah Caris</h1>
+              <h1 className="sumi-name !text-[clamp(3.2rem,7vw,5.5rem)]">
+                Jonaidah <span className="sumi-name-accent block">Caris</span>
+              </h1>
 
-              <p className="sumi-text mt-6 max-w-md !font-medium !text-[1rem] !leading-[1.9] sm:text-[1.05rem]">
+              <p className="sumi-text mt-5 max-w-md !font-medium !text-[1rem] !leading-[1.9] sm:text-[1.05rem]">
                 Hi, I'm Jonaidah Caris. I enjoy creating thoughtful digital
                 experiences through frontend development, clean interfaces,
                 and visual design.
@@ -127,7 +129,7 @@ export function App() {
             <div className="relative order-1 flex items-center justify-center md:order-2">
               <HeroEnso
                 play={ready}
-                className="absolute left-1/2 top-1/2 z-0 w-[min(120%,690px)] max-w-none -translate-x-1/2 -translate-y-1/2"
+                className="absolute left-1/2 top-1/2 z-0 w-[min(108%,621px)] max-w-none -translate-x-1/2 -translate-y-1/2"
               />
               <div className="relative z-10 w-full">
                 <NinjaPortrait play={ready} />

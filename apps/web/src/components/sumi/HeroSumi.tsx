@@ -60,10 +60,10 @@ type Layer = {
 
 /** Back to front. Far layers barely move and stay pale; near layers move more. */
 const LAYERS: Layer[] = [
-  { src: "images/hero/mist.webp", opacity: 0.4, bottom: "14%", width: "max(125%, 1100px)", scroll: [30, 10], delay: 0.5, float: [-3.2, 3, 46] },
-  { src: "images/hero/mountains-mid.webp", opacity: 0.65, bottom: "4%", width: "max(106%, 980px)", scroll: [48, 14], delay: 0.3 },
-  { src: "images/hero/mist.webp", opacity: 0.5, bottom: "0%", width: "max(130%, 1200px)", scroll: [60, -14], delay: 0.8, float: [3.4, -4, 58] },
-  { src: "images/hero/mountains-foreground.webp", opacity: 0.8, bottom: "-8%", width: "max(104%, 1000px)", scroll: [84, 8], delay: 0.6 },
+  { src: "images/hero/mist.webp", opacity: 0.3, bottom: "14%", width: "max(125%, 1100px)", scroll: [30, 10], delay: 0.5, float: [-3.2, 3, 46] },
+  { src: "images/hero/mountains-mid.webp", opacity: 0.55, bottom: "4%", width: "max(106%, 980px)", scroll: [48, 14], delay: 0.3 },
+  { src: "images/hero/mist.webp", opacity: 0.4, bottom: "0%", width: "max(130%, 1200px)", scroll: [60, -14], delay: 0.8, float: [3.4, -4, 58] },
+  { src: "images/hero/mountains-foreground.webp", opacity: 0.7, bottom: "-8%", width: "max(104%, 1000px)", scroll: [84, 8], delay: 0.6 },
 ];
 
 function ParallaxLayer({

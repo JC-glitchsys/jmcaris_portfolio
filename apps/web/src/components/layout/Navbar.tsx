@@ -60,7 +60,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   // A spring with a little bounce makes the pill stretch toward the next item and settle, like a drop of ink.
-  const pillTransition = reduceMotion ? { duration: 0 } : { type: "spring" as const, bounce: 0.22, duration: 0.62 };
+  const pillTransition = reduceMotion ? { duration: 0 } : { type: "spring" as const, bounce: 0.28, duration: 0.72 };
 
   // Active item: the gallery pages belong to "Projects"; on the home page it follows the scroll.
   // A click claims the indicator immediately so it slides once instead of hopping through

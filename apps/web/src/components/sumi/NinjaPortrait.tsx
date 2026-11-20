@@ -54,7 +54,7 @@ export default function NinjaPortrait({ play }: { play: boolean }) {
 
   return (
     <motion.div
-      className="relative mx-auto w-[min(72%,300px)] md:w-[min(100%,420px)] lg:w-[min(100%,490px)]"
+      className="relative mx-auto w-[min(65%,270px)] md:w-[min(90%,378px)] lg:w-[min(90%,441px)]"
       style={{ aspectRatio: "900 / 984" }}
       initial={{ opacity: 0, y: 36 }}
       animate={play ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }}
