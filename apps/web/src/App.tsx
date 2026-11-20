@@ -84,7 +84,7 @@ export function App() {
               element={
                 <>
           {/* Hero */}
-          <section className="relative grid items-center gap-8 py-14 md:min-h-[740px] md:grid-cols-[1fr_0.95fr] md:gap-8 md:py-24 lg:gap-14">
+          <section className="relative grid items-center gap-5 py-8 sm:gap-8 sm:py-12 md:min-h-[740px] md:grid-cols-[1fr_0.95fr] md:gap-8 md:py-24 lg:gap-14">
             <HeroSumi play={ready} />
 
             {/* Introduction */}
@@ -92,7 +92,7 @@ export function App() {
               className="relative z-10 order-2 md:order-1"
               initial={{ opacity: 0, y: 24 }}
               animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-              transition={{ duration: 1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.75, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
             >
               <div
                 className="mb-6 inline-flex items-center gap-3 rounded-full border px-4 py-2.5"
@@ -129,7 +129,7 @@ export function App() {
             <div className="relative order-1 flex items-center justify-center md:order-2">
               <HeroEnso
                 play={ready}
-                className="absolute left-1/2 top-1/2 z-0 w-[min(108%,621px)] max-w-none -translate-x-1/2 -translate-y-1/2"
+                className="absolute left-1/2 top-1/2 z-0 w-[min(115%,380px)] max-w-none -translate-x-1/2 -translate-y-1/2 md:w-[min(108%,621px)]"
               />
               <div className="relative z-10 w-full">
                 <NinjaPortrait play={ready} />
