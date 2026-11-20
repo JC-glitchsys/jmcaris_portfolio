@@ -217,10 +217,10 @@ export default function NinjaChatbot() {
             transition={{ duration: 0.2 }}
             className="absolute bottom-[72px] right-0 z-10 w-[min(260px,calc(100vw-2rem))]"
           >
-            <div className="relative rounded-2xl border border-[#E7E8EB] bg-white px-4 py-3 pr-9 shadow-[0_10px_30px_-14px_rgba(20,24,32,0.3)]">
+            <div className="relative rounded-2xl border border-[#B94632] bg-[#C83A2E] px-4 py-3 pr-9 shadow-[0_12px_30px_-12px_rgba(160,48,34,0.5)]">
               <button type="button" onClick={() => { setShowPrompt(false); setOpen(true); }} className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780]">
-                <span className="block text-xs font-semibold text-[#202124]">Hi! Have a question?</span>
-                <span className="mt-1 block text-[0.68rem] leading-relaxed text-[#777B83]">Ask me about Jonaidah’s skills and projects.</span>
+                <span className="block text-xs font-semibold text-white">Hi! Have a question?</span>
+                <span className="mt-1 block text-[0.68rem] leading-relaxed text-white/85">Ask me about Jonaidah’s skills and projects.</span>
               </button>
             </div>
           </motion.div>
@@ -269,7 +269,7 @@ export default function NinjaChatbot() {
                     <span aria-hidden="true" className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-white" style={{ background: "#718A72" }} />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="truncate text-[0.94rem] font-semibold leading-tight tracking-[-0.02em]">
+                    <h2 className="truncate text-[1.02rem] font-semibold leading-tight tracking-[-0.025em] text-[#202124]">
                       Jonaidah Caris
                     </h2>
                     <p className="mt-1 truncate text-[0.68rem] leading-tight" style={{ color: "#777B83" }}>

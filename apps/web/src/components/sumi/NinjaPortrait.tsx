@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import { asset, usePrefersReducedMotion } from "./hooks";
+import { asset, useDesktop, usePrefersReducedMotion } from "./hooks";
 
 /*
   A standalone piece of ink artwork: no card, no frame, transparent background.
@@ -37,6 +37,7 @@ const EYES = [
 
 export default function NinjaPortrait({ play }: { play: boolean }) {
   const reduce = usePrefersReducedMotion();
+  const desktop = useDesktop();
   const eyeA = useAnimationControls();
   const eyeB = useAnimationControls();
 
@@ -54,11 +55,11 @@ export default function NinjaPortrait({ play }: { play: boolean }) {
 
   return (
     <motion.div
-      className="relative mx-auto w-[min(65%,270px)] md:w-[min(90%,378px)] lg:w-[min(90%,441px)]"
+      className="relative mx-auto w-[min(70%,260px)] md:w-[min(90%,378px)] lg:w-[min(90%,441px)]"
       style={{ aspectRatio: "900 / 984" }}
       initial={{ opacity: 0, y: 36 }}
       animate={play ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }}
-      transition={{ duration: 1.3, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.9, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
       onPointerEnter={() => {
         if (!reduce && play) blink();
       }}
@@ -89,22 +90,22 @@ export default function NinjaPortrait({ play }: { play: boolean }) {
       {/* gentle float */}
       <motion.div
         className="absolute inset-0"
-        animate={reduce ? undefined : { y: [0, -10, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        animate={reduce || !desktop ? undefined : { y: [0, -7, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       >
        {/* slow side-to-side sway, pivoting near her base */}
        <motion.div
         className="absolute inset-0"
         style={{ transformOrigin: "50% 94%" }}
-        animate={reduce ? undefined : { rotate: [-0.7, 0.7, -0.7] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        animate={reduce || !desktop ? undefined : { rotate: [-0.45, 0.45, -0.45] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
        >
         {/* breathing */}
         <motion.div
           className="absolute inset-0"
           style={{ transformOrigin: "50% 100%" }}
-          animate={reduce ? undefined : { scaleY: [1, 1.012, 1], scaleX: [1, 1.004, 1] }}
-          transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+          animate={reduce || !desktop ? undefined : { scaleY: [1, 1.008, 1], scaleX: [1, 1.003, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         >
         <img
           src={asset("images/ninja-body.webp")}
@@ -126,8 +127,8 @@ export default function NinjaPortrait({ play }: { play: boolean }) {
                 height={984}
                 className="absolute inset-0 h-full w-full select-none object-contain"
                 style={{ transformOrigin: "35.6% 47.8%" }}
-                animate={{ rotate: [0, -1.7, 0.5, 0], skewX: [0, 0.5, -0.2, 0] }}
-                transition={{ duration: 5.4, repeat: Infinity, ease: "easeInOut", times: [0, 0.42, 0.78, 1] }}
+                animate={desktop ? { rotate: [0, -1.7, 0.5, 0], skewX: [0, 0.5, -0.2, 0] } : undefined}
+                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", times: [0, 0.42, 0.78, 1] }}
                 draggable={false}
               />
             </div>
@@ -140,8 +141,8 @@ export default function NinjaPortrait({ play }: { play: boolean }) {
                 height={984}
                 className="absolute inset-0 h-full w-full select-none object-contain"
                 style={{ transformOrigin: "73.3% 30.5%" }}
-                animate={{ rotate: [0, 1.5, -0.4, 0] }}
-                transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut", times: [0, 0.4, 0.8, 1], delay: 0.8 }}
+                animate={desktop ? { rotate: [0, 1.5, -0.4, 0] } : undefined}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", times: [0, 0.4, 0.8, 1], delay: 0.8 }}
                 draggable={false}
               />
             </div>
