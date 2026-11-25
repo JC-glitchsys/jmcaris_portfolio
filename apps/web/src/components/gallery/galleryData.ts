@@ -19,7 +19,102 @@ export type GalleryItem = {
   focus?: string;
   /** Real public deployment URL (https only). */
   liveUrl?: string;
+  /** Multiple images are treated as a group and opened as a manual slider. */
+  images?: GallerySlide[];
 };
+
+export type GallerySlide = { image: string; caption: string; alt: string };
+
+const visualFiles = [
+  "1.png", "1.2.png", "1.3.png", "1.4.png", "2.1.png", "2.2.png", "2.3.png", "2.4.png",
+  "3.1.png", "3.2.png", "3.3.png", "4.png", "4.1.png", "4.2.png", "4.3.png", "4.4.png",
+  "5.png", "5.1.png", "5.2.png", "5.3.png", "5.4.png", "5.5.png", "5.6.png", "6.png",
+  "7.png", "7.1.png", "7.2.png", "7.3.png", "8.png", "8.1.png", "9.png", "9.1.png",
+  "9.2.png", "9.3.png", "9.4.png", "9.5.png", "10.png", "10.2.png", "10.3.png", "10.4.png",
+  "10.5.png", "10.6.png", "10.7.png", "10.8.png", "10.9.png", "10.10.png", "10.11.png",
+  "10.12.png", "10.13.png", "10.14.png", "11.png", "12.png", "12.1.png", "12.2.png",
+  "12.3.png", "12.4.png", "13.png", "14.png", "15.png", "15.2.png", "15.3.png", "15.4.png",
+  "15.5.png", "16.png", "17.png", "19.png", "20.png", "54.png", "66.png",
+];
+
+const groupTitles: Record<string, string> = {
+  "1": "SAGAYAN 2026",
+  "2": "Batch Rinayag",
+  "3": "SIYASAT 2026",
+  "4": "SAGAYAN Intramurals",
+  "5": "HALALAN 2026",
+  "7": "House Baratheon",
+  "8": "KASADYA Match Results",
+  "9": "Editorial Board",
+  "10": "Clickwise Issue 4",
+  "12": "5G in Marawi",
+  "15": "Esports Summer Cup",
+};
+
+const singleTitles: Record<string, string> = {
+  "1.png": "SAGAYAN 2026",
+  "4.png": "T-Rex Runner-Up",
+  "5.png": "HALALAN 2026",
+  "6.png": "Learning Modality Survey",
+  "7.png": "House Baratheon",
+  "8.png": "KASADYA Match Results",
+  "9.png": "Editorial Board & Staff",
+  "10.png": "Clickwise Issue 4",
+  "11.png": "T-Rex Softball Win",
+  "12.png": "5G in Marawi",
+  "13.png": "Alumni Congratulations",
+  "14.png": "Junford Gairanan, Valedictorian",
+  "15.png": "Holy Week 2025",
+  "16.png": "Join the Editorial Board",
+  "17.png": "Join the Editorial Board",
+  "19.png": "Congratulations, Prof. Asakil",
+  "20.png": "Eid Al-Adha Mubarak",
+  "54.png": "Eid Al-Fitr Mubarak",
+  "66.png": "Ramadhan Kareem",
+};
+
+const visualItems: GalleryItem[] = (() => {
+  const numbered = visualFiles.map((file) => ({
+    file,
+    match: /^(\d+)(?:\.(\d+))?\.(?:png|jpe?g|webp)$/i.exec(file)!,
+  }));
+  const groups = new Map<string, typeof numbered>();
+  numbered.filter(({ match }) => match[2]).forEach((entry) => {
+    const group = groups.get(entry.match[1]) ?? [];
+    group.push(entry);
+    groups.set(entry.match[1], group);
+  });
+  const emitted = new Set<string>();
+  const items: GalleryItem[] = [];
+  for (const entry of numbered) {
+    const groupId = entry.match[1];
+    const group = groups.get(groupId);
+    if (entry.match[2] && group && group.length > 1) {
+      if (emitted.has(groupId)) continue;
+      emitted.add(groupId);
+      const slides = group.sort((a, b) => Number(a.match[2]) - Number(b.match[2]));
+      items.push({
+        id: `visual-editorial-group-${groupId}`,
+        title: groupTitles[groupId] ?? `Editorial Collection ${groupId}`,
+        caption: `${slides.length} related designs.`,
+        images: slides.map(({ file }, i) => ({
+          image: `gallery/visual-editorial/${file}`,
+          caption: `${groupTitles[groupId] ?? `Editorial Collection ${groupId}`} · Image ${i + 1}`,
+          alt: `Visual and editorial design, group ${groupId}, image ${i + 1}`,
+        })),
+      });
+    } else if (!entry.match[2]) {
+      items.push({
+        id: `visual-editorial-${entry.file}`,
+        title: singleTitles[entry.file] ?? `Editorial Design ${entry.match[1]}`,
+        caption: "Visual and editorial design.",
+        image: `gallery/visual-editorial/${entry.file}`,
+        alt: `Visual and editorial design ${entry.match[1]}`,
+      });
+    }
+  }
+  return items;
+})();
 
 export type GalleryPageData = {
   slug: "visual-editorial" | "ui-ux-design" | "frontend-projects";
@@ -51,36 +146,7 @@ export const galleryPages: Record<GalleryPageData["slug"], GalleryPageData> = {
     title: "Visual & ",
     accent: "Editorial.",
     subtitle: "Publication layouts, pubmats, and editorial designs.",
-    items: withWork(
-      placeholders(
-        "visual-editorial",
-        "Editorial piece",
-        "Placeholder: add a publication layout or pubmat screenshot and its caption in galleryData.ts.",
-      ),
-      [
-        {
-          title: "Towards the Limitless",
-          caption: "Editorial poster in black and white with layered type and a chess-piece silhouette.",
-          alt: "Black and white poster of a chess king casting a long shadow, with small editorial type around it.",
-          image: "gallery/visual-editorial/01.webp",
-          focus: "50% 58%",
-        },
-        {
-          title: "System, blurred portrait",
-          caption: "Grainy blurred portrait poster with a clean text overlay and a small type system.",
-          alt: "Grainy grayscale poster of a blurred portrait with a white text bar across the eyes.",
-          image: "gallery/visual-editorial/02.webp",
-          focus: "50% 42%",
-        },
-        {
-          title: "Asterisk, abstract poster",
-          caption: "Abstract poster built from metallic asterisk shapes and oversized type.",
-          alt: "Dark abstract poster with large metallic asterisk shapes and faded letterforms.",
-          image: "gallery/visual-editorial/03.webp",
-          focus: "50% 30%",
-        },
-      ],
-    ),
+    items: visualItems,
   },
   "ui-ux-design": {
     slug: "ui-ux-design",

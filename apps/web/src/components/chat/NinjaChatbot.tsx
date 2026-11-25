@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Archive, History as HistoryIcon, MoreHorizontal, Trash2 } from "lucide-react";
+import { Archive, ArrowDown, ArrowUp, History as HistoryIcon, Plus, Trash2 } from "lucide-react";
 
 import { asset } from "../sumi/hooks";
 
@@ -24,9 +24,9 @@ const EDGE = "#E7E8EB";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const GREETING =
-  "Kumusta! Ako ang Ninja Girl Assistant ni Jonaidah. Tanungin mo ako tungkol sa skills, projects, o availability niya.";
-const LOADING_TEXT = "Nagsusulat ng ink...";
-const ERROR_TEXT = "Naubusan ako ng ink, try mo ulit!";
+  "Hi I'm Ninja Girl Assistant of Jonaidah. Ask about her skills, projects, or her availability.";
+const LOADING_TEXT = "Typing...";
+const ERROR_TEXT = "Try again..";
 const QUICK_REPLIES = ["Anong skills mo?", "Anong projects mo?", "Available ka ba for work?"];
 const MAX_INPUT = 300;
 const TIMEOUT_MS = 25_000;
@@ -56,6 +56,7 @@ export default function NinjaChatbot() {
   });
   const [showArchives, setShowArchives] = useState(false);
   const [showActions, setShowActions] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
   const [confirmAction, setConfirmAction] = useState<"archive" | "delete" | null>(null);
 
   const nextId = useRef(1);
@@ -65,12 +66,27 @@ export default function NinjaChatbot() {
   const abortRef = useRef<AbortController | null>(null);
   const wasOpen = useRef(false);
   const unmounted = useRef(false);
+  const pinnedToBottom = useRef(true);
 
-  // keep the newest message in view
+  // Follow new content only while the reader is already at the end of the thread.
   useEffect(() => {
     const el = listRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
+    if (el && pinnedToBottom.current) el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
   }, [messages, loading, reduce]);
+
+  const handleListScroll = () => {
+    const el = listRef.current;
+    if (!el) return;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+    pinnedToBottom.current = atBottom;
+    setIsAtBottom(atBottom);
+  };
+
+  const scrollToLatest = () => {
+    pinnedToBottom.current = true;
+    setIsAtBottom(true);
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: reduce ? "auto" : "smooth" });
+  };
 
   // focus moves into the chat when it opens and back to the button when it closes
   useEffect(() => {
@@ -112,6 +128,8 @@ export default function NinjaChatbot() {
         .filter((m) => m.id !== 0 && !m.error)
         .map((m) => ({ role: m.role, text: m.text }));
 
+      pinnedToBottom.current = true;
+      setIsAtBottom(true);
       setMessages((prev) => [...prev, userMsg]);
       setInput("");
       setLoading(true);
@@ -239,14 +257,14 @@ export default function NinjaChatbot() {
             transition={{ duration: reduce ? 0.12 : 0.32, ease: EASE }}
             className="relative"
             style={{
-              width: "344px",
+              width: "370px",
               maxWidth: "calc(100vw - 2rem)",
-              height: "min(500px, calc(100dvh - 10.5rem))",
+              height: "min(560px, calc(100dvh - 7rem))",
               transformOrigin: "bottom right",
             }}
           >
             <div
-              className="relative flex size-full flex-col overflow-hidden rounded-[18px]"
+              className="relative flex size-full flex-col overflow-hidden rounded-[22px]"
               style={{
                 background: PAPER,
                 color: INK,
@@ -255,11 +273,11 @@ export default function NinjaChatbot() {
               }}
             >
               {/* header */}
-              <header className="relative flex items-center justify-between gap-2 px-3.5 py-3" style={{ borderBottom: `1px solid ${EDGE}` }}>
+              <header className="relative flex items-center justify-between gap-2 px-5 py-4" style={{ borderBottom: `1px solid ${EDGE}` }}>
                 <div className="flex min-w-0 items-center gap-2.5 pr-28">
                   <div className="relative size-11 shrink-0 rounded-full p-[2px]" style={{ background: "linear-gradient(145deg, #D8DADF, #F1E5C9)" }}>
                     <img
-                      src={asset("images/ninja-avatar.png")}
+                      src={asset("images/profile-brown.jpg")}
                       alt=""
                       width={192}
                       height={192}
@@ -290,19 +308,6 @@ export default function NinjaChatbot() {
                   <button type="button" onClick={() => setShowArchives((value) => !value)} aria-label={showArchives ? "Return to chat" : "View archived chats"} title="Archived chats" className="flex size-8 items-center justify-center rounded-full text-[#777B83] transition-colors hover:bg-[#F0F1F3] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#727780]">
                     <HistoryIcon size={16} aria-hidden="true" />
                   </button>
-                  <button type="button" onClick={() => setShowActions((value) => !value)} aria-label="More chat actions" aria-expanded={showActions} title="More actions" className="flex size-8 items-center justify-center rounded-full text-[#777B83] transition-colors hover:bg-[#F0F1F3] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#727780]">
-                    <MoreHorizontal size={17} aria-hidden="true" />
-                  </button>
-                  {showActions && (
-                    <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-[#E7E8EB] bg-white p-1.5 shadow-xl">
-                      <button type="button" onClick={() => { setShowActions(false); setConfirmAction("archive"); }} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-[#34363B] transition-colors hover:bg-[#F4F5F6]">
-                        <Archive size={15} aria-hidden="true" className="text-[#777B83]" /> Archive conversation
-                      </button>
-                      <button type="button" onClick={() => { setShowActions(false); setConfirmAction("delete"); }} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-[#A43C3C] transition-colors hover:bg-[#FBF2F2]">
-                        <Trash2 size={15} aria-hidden="true" /> Delete all history
-                      </button>
-                    </div>
-                  )}
                 </div>
               </header>
 
@@ -333,7 +338,8 @@ export default function NinjaChatbot() {
                 role="log"
                 aria-live="polite"
                 aria-label="Usapan"
-                className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
+                className="relative flex-1 space-y-5 overflow-y-auto bg-[#FAFAF8] px-5 py-6"
+                onScroll={handleListScroll}
               >
                 {messages.map((m) => (
                   <motion.div
@@ -344,7 +350,7 @@ export default function NinjaChatbot() {
                     className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
                   >
                     <p
-                      className="max-w-[86%] whitespace-pre-wrap break-words px-3.5 py-2.5 text-[0.8rem] leading-[1.6]"
+                      className="max-w-[88%] whitespace-pre-wrap break-words px-4 py-3.5 text-[0.82rem] leading-[1.65] shadow-[0_1px_2px_rgba(20,24,32,0.04)]"
                       style={
                         m.role === "user"
                           ? { background: "#25272B", color: "#FFFFFF", borderRadius: "16px 16px 4px 16px" }
@@ -404,16 +410,30 @@ export default function NinjaChatbot() {
                     ))}
                   </div>
                 )}
+                {!isAtBottom && (
+                  <button type="button" onClick={scrollToLatest} className="sticky bottom-1 left-1/2 z-10 mx-auto flex items-center gap-1.5 rounded-full border border-[#E7E8EB] bg-white px-3 py-2 text-[0.7rem] font-medium text-[#34363B] shadow-md transition hover:bg-[#F4F5F6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780]">
+                    <ArrowDown size={14} aria-hidden="true" /> New messages
+                  </button>
+                )}
               </div>}
 
               {/* input */}
-              {!showArchives && <form onSubmit={onSubmit} className="px-3.5 pb-3.5 pt-1">
+              {!showArchives && <form onSubmit={onSubmit} className="border-t border-[#E7E8EB] bg-white px-5 pb-5 pt-4">
                 <div
-                  className="flex items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 transition-shadow duration-200 focus-within:shadow-[0_0_0_2px_rgba(115,120,130,0.18)] motion-reduce:transition-none"
-                  style={{ background: SHEET, border: `1px solid ${EDGE}` }}
+                  className="flex items-end gap-2 rounded-[18px] p-2 transition-shadow duration-200 focus-within:shadow-[0_0_0_2px_rgba(115,120,130,0.18)] motion-reduce:transition-none"
+                  style={{ background: "#FAFAFA", border: `1px solid ${EDGE}` }}
                 >
+                  <div className="relative shrink-0">
+                    <button type="button" onClick={() => setShowActions((value) => !value)} aria-label="More chat actions" aria-expanded={showActions} className="flex size-9 items-center justify-center rounded-full text-[#777B83] transition-colors hover:bg-[#F0F1F3] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#727780]">
+                      <Plus size={18} aria-hidden="true" />
+                    </button>
+                    {showActions && <div className="absolute bottom-full left-0 z-20 mb-2 w-52 rounded-xl border border-[#E7E8EB] bg-white p-1.5 shadow-xl">
+                      <button type="button" onClick={() => { setShowActions(false); setConfirmAction("archive"); }} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-[#34363B] transition-colors hover:bg-[#F4F5F6]"><Archive size={15} aria-hidden="true" className="text-[#777B83]" /> Archive conversation</button>
+                      <button type="button" onClick={() => { setShowActions(false); setConfirmAction("delete"); }} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-[#A43C3C] transition-colors hover:bg-[#FBF2F2]"><Trash2 size={15} aria-hidden="true" /> Delete all history</button>
+                    </div>}
+                  </div>
                   <label htmlFor={`${panelId}-input`} className="sr-only">
-                    Tanong ka
+                    Ask me
                   </label>
                   <input
                     id={`${panelId}-input`}
@@ -421,19 +441,20 @@ export default function NinjaChatbot() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     maxLength={MAX_INPUT}
-                    placeholder="Tanong ka..."
+                    placeholder="Ask me..."
                     autoComplete="off"
                     disabled={loading}
-                    className="min-w-0 flex-1 bg-transparent py-1.5 text-[0.8rem] leading-none outline-none placeholder:text-[#8B8F97] disabled:opacity-60"
+                    className="min-w-0 flex-1 bg-transparent px-1 py-2 text-[0.8rem] leading-tight outline-none placeholder:text-[#8B8F97] disabled:opacity-60"
                     style={{ color: INK }}
                   />
                   <button
                     type="submit"
                     disabled={!canSend}
-                    className="rounded-full px-4 py-2 text-[0.72rem] font-medium leading-none transition-[background-color,opacity] duration-200 hover:bg-[#3B3E44] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780] disabled:opacity-40 disabled:hover:bg-[#25272B] motion-reduce:transition-none"
+                    aria-label="Send message"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full transition-[background-color,opacity] duration-200 hover:bg-[#3B3E44] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780] disabled:opacity-40 disabled:hover:bg-[#25272B] motion-reduce:transition-none"
                     style={{ background: "#25272B", color: "#FFFFFF" }}
                   >
-                    Send
+                    <ArrowUp size={17} aria-hidden="true" />
                   </button>
                 </div>
               </form>}
@@ -472,7 +493,7 @@ export default function NinjaChatbot() {
         }}
       >
         <img
-          src={asset("images/ninja-avatar.png")}
+          src={asset("images/profile-brown.jpg")}
           alt=""
           width={192}
           height={192}

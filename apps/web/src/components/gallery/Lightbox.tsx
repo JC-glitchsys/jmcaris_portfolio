@@ -45,22 +45,28 @@ type Props = {
   index: number | null;
   onIndexChange: (i: number) => void;
   onClose: () => void;
+  slideIndex: number;
+  onSlideIndexChange: (i: number) => void;
 };
 
-export default function Lightbox({ items, index, onIndexChange, onClose }: Props) {
+export default function Lightbox({ items, index, onIndexChange, onClose, slideIndex, onSlideIndexChange }: Props) {
   const open = index !== null;
   const [dir, setDir] = useState(1);
   const closeRef = useRef<HTMLButtonElement>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
-  const count = items.length;
+  const item = index !== null ? items[index] : null;
+  const slides = item?.images;
+  const count = slides?.length ?? items.length;
+  const activeSlide = slides ? Math.min(slideIndex, slides.length - 1) : 0;
 
   const go = useCallback(
     (step: number) => {
       if (index === null || count < 2) return;
       setDir(step);
-      onIndexChange((index + step + count) % count);
+      if (slides) onSlideIndexChange((activeSlide + step + count) % count);
+      else onIndexChange((index + step + count) % count);
     },
-    [index, count, onIndexChange],
+    [index, count, onIndexChange, onSlideIndexChange, slides, activeSlide],
   );
 
   // Keyboard + scroll lock + initial focus while open
@@ -82,8 +88,8 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
     };
   }, [open, go, onClose]);
 
-  const item = index !== null ? items[index] : null;
   const live = item && isPublicLiveUrl(item.liveUrl) ? item.liveUrl : null;
+  const currentImage = slides?.[activeSlide];
 
   return (
     <AnimatePresence>
@@ -92,7 +98,7 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
           key="lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label={`${item.title}, image ${index + 1} of ${count}`}
+          aria-label={`${item.title}, image ${activeSlide + 1} of ${count}`}
           className="fixed inset-0 z-[90] flex flex-col"
           style={{ background: "rgba(18, 17, 13, 0.92)" }}
           initial={{ opacity: 0 }}
@@ -103,7 +109,7 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
         >
           <div className="flex items-center justify-between px-4 py-3 sm:px-8 sm:py-5" onClick={(e) => e.stopPropagation()}>
             <p className="sumi-label !text-[0.7rem] !tracking-[0.22em]" style={{ color: "#eee7d7" }} aria-live="polite">
-              {String(index + 1).padStart(2, "0")} <span style={{ color: "#c9a96a" }}>/</span> {String(count).padStart(2, "0")}
+              {activeSlide + 1} <span style={{ color: "#c9a96a" }}>/</span> {count}
             </p>
             <button
               ref={closeRef}
@@ -134,6 +140,12 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
               if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.2) go(dx < 0 ? 1 : -1);
             }}
           >
+            {slides && slides.length > 1 && (
+              <>
+                <img src={asset(slides[(activeSlide - 1 + slides.length) % slides.length].image)} alt="" aria-hidden="true" className="pointer-events-none absolute left-0 hidden max-h-[48vh] w-[18vw] -translate-x-1/2 object-contain opacity-25 blur-[1px] sm:block" />
+                <img src={asset(slides[(activeSlide + 1) % slides.length].image)} alt="" aria-hidden="true" className="pointer-events-none absolute right-0 hidden max-h-[48vh] w-[18vw] translate-x-1/2 object-contain opacity-25 blur-[1px] sm:block" />
+              </>
+            )}
             {count > 1 && (
               <button
                 type="button"
@@ -148,7 +160,7 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
 
             <AnimatePresence mode="wait" custom={dir} initial={false}>
               <motion.div
-                key={item.id}
+                key={`${item.id}-${activeSlide}`}
                 custom={dir}
                 className="max-h-full w-full max-w-4xl overflow-hidden rounded-[12px]"
                 style={{ background: "#1d1c17" }}
@@ -157,10 +169,10 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
                 exit={{ opacity: 0, x: dir * -28 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                {item.image ? (
+                {currentImage || item.image ? (
                   <img
-                    src={asset(item.image)}
-                    alt={item.alt ?? `${item.title}: ${item.caption}`}
+                    src={asset(currentImage?.image ?? item.image!)}
+                    alt={currentImage?.alt ?? item.alt ?? `${item.title}: ${item.caption}`}
                     draggable={false}
                     className="mx-auto block max-h-[58vh] w-auto max-w-full select-none object-contain"
                   />
@@ -191,9 +203,10 @@ export default function Lightbox({ items, index, onIndexChange, onClose }: Props
                 {item.title}
               </h3>
               <p className="f-body mt-2 text-[0.86rem]" style={{ color: "#cfc7b6" }}>
-                {item.caption}
+                {currentImage?.caption ?? item.caption}
               </p>
             </div>
+            {slides && <div className="mt-4 flex items-center justify-center gap-2" aria-label="Choose image">{slides.map((slide, i) => <button key={slide.image} type="button" onClick={() => onSlideIndexChange(i)} aria-label={`Show image ${i + 1}`} aria-current={i === activeSlide ? "true" : undefined} className="size-2 rounded-full transition-transform" style={{ background: i === activeSlide ? "#c9a96a" : "rgba(238,231,215,.45)", transform: i === activeSlide ? "scale(1.25)" : undefined }} />)}</div>}
             {live && (
               <a
                 href={live}

@@ -12,8 +12,8 @@ const SCENE = {
   moon: "images/moon.webp",
   mist: "images/hero/mist.webp",
 };
-/** The scene plays this long, then the 1-second reveal into the portfolio: five seconds in all. */
-const SHOW_MS = 4000;
+/** The scene plays this long, then the 1-second reveal into the portfolio: six seconds in all. */
+const SHOW_MS = 5000;
 const REVEAL_S = 1;
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const MESSAGE = "Please wait...";

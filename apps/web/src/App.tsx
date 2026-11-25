@@ -104,7 +104,7 @@ export function App() {
                 </span>
               </div>
 
-              <h1 className="sumi-name !text-[clamp(3.2rem,7vw,5.5rem)]">
+              <h1 className="sumi-name text-left !text-[clamp(3.5rem,7.5vw,6rem)]">
                 Jonaidah <span className="sumi-name-accent block">Caris</span>
               </h1>
 

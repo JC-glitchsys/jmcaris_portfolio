@@ -2,26 +2,6 @@ import { Download } from "lucide-react";
 import { Reveal } from "../sumi/Ink";
 import { asset } from "../sumi/hooks";
 
-const skills = [
-  "HTML",
-  "CSS",
-  "JavaScript",
-  "Shadcn/ui",
-  "React.js",
-  "Vue.js",
-  "Tailwind CSS",
-  "Firebase",
-  "Node.js",
-  "Express.js",
-  "MySQL",
-  "Git/GitHub",
-  "Figma",
-  "Canva",
-  "Jira",
-  "TestRail",
-  "Cypress",
-];
-
 const softSkills = ["Time Management", "Adaptability", "Communication"];
 
 /*
@@ -113,22 +93,8 @@ export default function AboutMe() {
                   </span>
                 </div>
 
-                {/* Skills */}
                 <div className="mt-12">
-                  <p className="sumi-label mb-5">Skills</p>
-                  <div className="flex flex-wrap gap-2.5">
-                    {skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="f-body rounded-full px-3.5 py-1.5 text-[0.8rem] transition-colors hover:!text-[color:var(--gold-deep)]"
-                        style={{ color: "var(--ink-soft)", background: "var(--parchment)" }}
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="sumi-label mb-4 mt-9">Soft Skills</p>
+                  <p className="sumi-label mb-4">Soft Skills</p>
                   <div className="flex flex-wrap gap-2.5">
                     {softSkills.map((skill) => (
                       <span
