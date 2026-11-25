@@ -35,6 +35,10 @@ Then in GitHub:
 3. Set its value to your deployed Cloudflare Worker's URL.
 4. Re-run the GitHub Pages deployment workflow.
 
+### Vercel deployment
+
+In the Vercel project settings, add `VITE_CHAT_API_URL` as an Environment Variable for Production (and Preview if needed). Set it to the deployed Cloudflare Worker URL, then redeploy the site. The Vercel site origin is included in `workers/gemini-chat/wrangler.toml`; redeploy the Worker after changing its allowed origins.
+
 ### Local development
 
 Copy `workers/gemini-chat/.dev.vars.example` to `.dev.vars`, then run:
