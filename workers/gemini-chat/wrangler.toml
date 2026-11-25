@@ -4,7 +4,7 @@ compatibility_date = "2026-01-01"
 
 [vars]
 # Comma-separated list of sites allowed to call this endpoint (no trailing slashes, no paths).
-ALLOWED_ORIGINS = "https://jc-glitchsys.github.io,http://localhost:5173,http://localhost:4173"
+ALLOWED_ORIGINS = "https://jc-glitchsys.github.io,https://jmcarisss-portfolio.vercel.app,http://localhost:5173,http://localhost:4173"
 GEMINI_MODEL = "gemini-3.5-flash"
 
 # The secret is NOT stored here. Set it with:  npx wrangler secret put GEMINI_API_KEY

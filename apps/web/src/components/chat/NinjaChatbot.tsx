@@ -34,7 +34,7 @@ const ARCHIVE_KEY = "ninja-chat-archives";
 
 const API_URL: string =
   (import.meta.env.VITE_CHAT_API_URL as string | undefined)?.trim() ||
-  (import.meta.env.DEV ? "http://localhost:8787" : "");
+  (import.meta.env.DEV ? "http://localhost:8787" : "https://jmcaris-gemini-chat.jmcaris-portfolio-2027.workers.dev");
 
 export default function NinjaChatbot() {
   const reduce = useReducedMotion();
@@ -235,10 +235,10 @@ export default function NinjaChatbot() {
             transition={{ duration: 0.2 }}
             className="absolute bottom-[72px] right-0 z-10 w-[min(260px,calc(100vw-2rem))]"
           >
-            <div className="relative rounded-2xl border border-[#B94632] bg-[#C83A2E] px-4 py-3 pr-9 shadow-[0_12px_30px_-12px_rgba(160,48,34,0.5)]">
+            <div className="relative rounded-2xl border border-[#E7E8EB] bg-white px-4 py-3 pr-9 shadow-[0_8px_24px_-14px_rgba(37,39,43,0.22)]">
               <button type="button" onClick={() => { setShowPrompt(false); setOpen(true); }} className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780]">
-                <span className="block text-xs font-semibold text-white">Hi! Have a question?</span>
-                <span className="mt-1 block text-[0.68rem] leading-relaxed text-white/85">Ask me about Jonaidah’s skills and projects.</span>
+                <span className="block text-xs font-semibold text-[#34363B]">Hi! Have a question?</span>
+                <span className="mt-1 block text-[0.68rem] leading-relaxed text-[#646870]">Ask me about Jonaidah’s skills and projects.</span>
               </button>
             </div>
           </motion.div>
