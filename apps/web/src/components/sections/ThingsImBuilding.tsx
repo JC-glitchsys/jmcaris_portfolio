@@ -4,7 +4,7 @@ import { Reveal, SectionHeading } from "../sumi/Ink";
 import { asset } from "../sumi/hooks";
 import { galleryPages, type GalleryPageData } from "../gallery/galleryData";
 
-type Tone = "gray" | "sand" | "blue";
+type Tone = "gray" | "orange" | "blue";
 
 type Project = {
   number: string;
@@ -14,7 +14,7 @@ type Project = {
   slug: GalleryPageData["slug"];
   href: string;
   cta: string;
-  /** Each project has its own ink: light gray, the existing warm sand, and very light blue. */
+  /** Each project has its own accent color. */
   tone: Tone;
 };
 
@@ -27,7 +27,7 @@ const projects: Project[] = [
     slug: "visual-editorial",
     href: "/visual-editorial",
     cta: "Open the gallery",
-    tone: "gray",
+    tone: "blue",
   },
   {
     number: "02",
@@ -37,7 +37,7 @@ const projects: Project[] = [
     slug: "ui-ux-design",
     href: "/ui-ux-design",
     cta: "See the designs",
-    tone: "sand",
+    tone: "orange",
   },
   {
     number: "03",
@@ -47,7 +47,7 @@ const projects: Project[] = [
     slug: "frontend-projects",
     href: "/frontend-projects",
     cta: "Browse the builds",
-    tone: "blue",
+    tone: "gray",
   },
 ];
 
@@ -55,16 +55,19 @@ function ProjectCard({ project }: { project: Project }) {
   // Use the requested artwork as the three cover tiles on the main page.
   const previews = project.slug === "visual-editorial"
     ? ["7.3.png", "11.png", "1.4.png"].map((file) => ({ id: file, image: `gallery/visual-editorial/${file}` }))
-    : galleryPages[project.slug].items.filter((item) => item.image).slice(0, 3);
+    : galleryPages[project.slug].items.flatMap((item) => {
+        const image = item.image ?? item.images?.[0]?.image;
+        return image ? [{ id: item.id, image, focus: item.focus }] : [];
+      }).slice(0, 4);
 
   return (
     <Link
       to={project.href}
       aria-label={`${project.title}: ${project.cta}`}
       data-tone={project.tone}
-      className="work-card group"
+      className={`work-card group ${project.slug === "frontend-projects" ? "work-card-frontend" : ""}`}
     >
-      <span className="work-previews" aria-hidden="true">
+      <span className={`work-previews ${project.slug === "frontend-projects" ? "work-previews-four" : ""}`} aria-hidden="true">
         {previews.map((item) => (
           <span key={item.id} className="work-tile">
             <img
@@ -109,6 +112,7 @@ export default function ThingsImBuilding() {
     <section id="projects" className="scroll-mt-12 pb-20 pt-10 sm:pb-24 sm:pt-14 lg:pb-28 lg:pt-16">
       <div className="mx-auto max-w-[1440px]">
         <SectionHeading
+          align="left"
           eyebrow="Creative Space"
           icon={<Layers3 size={14} style={{ color: "var(--gold-deep)" }} aria-hidden="true" />}
           subtitle="Designing ideas. Building experiences. A first look at each collection."

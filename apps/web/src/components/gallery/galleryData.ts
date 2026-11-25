@@ -191,36 +191,50 @@ export const galleryPages: Record<GalleryPageData["slug"], GalleryPageData> = {
     title: "Frontend ",
     accent: "Projects.",
     subtitle: "React websites and interactive frontend projects.",
-    items: withWork(
-      placeholders(
-        "frontend-projects",
-        "Frontend project",
-        "Placeholder: add a project screenshot, caption, and its real deployed https URL in galleryData.ts.",
-      ),
-      [
-        {
-          title: "Layla, web concept",
-          caption: "Landing page concept with a hero carousel, search, artwork cards, and a lore sidebar.",
-          alt: "Web page concept with a blue hero banner, a navigation bar, artwork cards, and a recent search list.",
-          image: "gallery/frontend-projects/01.webp",
-          focus: "50% 40%",
-        },
-        {
-          title: "Glass mobile screens",
-          caption: "Mobile app screens in a soft glass style with light and dark variants.",
-          alt: "Grid of mobile app screens in light and dark glassy styles.",
-          image: "gallery/frontend-projects/02.webp",
-          focus: "50% 30%",
-        },
-        {
-          title: "Destination cards",
-          caption: "A row of travel destination cards with photos, details, and an Explore button.",
-          alt: "Four travel destination cards for Turkey, Indonesia, Dubai, and Vietnam.",
-          image: "gallery/frontend-projects/03.webp",
-          focus: "50% 45%",
-        },
-      ],
-    ),
+    items: [
+      {
+        id: "frontend-pair-me",
+        title: "PAIR ME",
+        caption: "A closer look at the PAIR ME frontend, shown screen by screen.",
+        liveUrl: "https://jc-glitchsys.github.io/pair-me/",
+        images: ["2.png", "2.1.png", "2.2.png", "2.3.png", "2.4.png"].map((file, i) => ({
+          image: `gallery/frontend-projects/PAIR ME/${file}`,
+          caption: `PAIR ME · Screen ${i + 1}`,
+          alt: `PAIR ME frontend screenshot ${i + 1}`,
+        })),
+      },
+      {
+        id: "frontend-lakbay-lanao",
+        title: "LAKBAY LANAO",
+        caption: "A closer look at the LAKBAY LANAO frontend, shown screen by screen.",
+        liveUrl: "https://lakbay-lanao-system-9e744.web.app/",
+        images: ["1.png", "1.1.png", "1.2.png", "1.3.png", "1.4.png", "1.5.png", "1.6.png", "1.7.png", "1.7 (2).png", "1.8.png", "1.9.png"].map((file, i) => ({
+          image: `gallery/frontend-projects/LAKBAY LANAO/${file}`,
+          caption: `LAKBAY LANAO · Screen ${i + 1}`,
+          alt: `LAKBAY LANAO frontend screenshot ${i + 1}`,
+        })),
+      },
+      {
+        id: "frontend-msu-lms",
+        title: "MSU LMS",
+        caption: "A closer look at the MSU LMS frontend, shown screen by screen.",
+        images: ["3.png", "3.1.png", "3.2.png", "3.3.png", "3.4.png", "3.5.png", "3.6.png"].map((file, i) => ({
+          image: `gallery/frontend-projects/MSU LMS/${file}`,
+          caption: `MSU LMS · Screen ${i + 1}`,
+          alt: `MSU LMS frontend screenshot ${i + 1}`,
+        })),
+      },
+      {
+        id: "frontend-cics-clearance",
+        title: "CICS Clearance",
+        caption: "A closer look at the CICS Clearance frontend, shown screen by screen.",
+        images: ["1.png", "2.png", "3.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png"].map((file, i) => ({
+          image: `gallery/frontend-projects/CICS Clearance/${file}`,
+          caption: `CICS Clearance · Screen ${i + 1}`,
+          alt: `CICS Clearance frontend screenshot ${i + 1}`,
+        })),
+      },
+    ],
   },
 };
 

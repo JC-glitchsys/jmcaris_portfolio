@@ -3,6 +3,7 @@ import { Reveal } from "../sumi/Ink";
 import { asset } from "../sumi/hooks";
 
 const softSkills = ["Time Management", "Adaptability", "Communication"];
+const roles = ["UI/UX Designer", "Frontend Developer", "Layout Artist"];
 
 /*
   Structure note: like Creative, the card wrapper stays the direct child of the section
@@ -37,12 +38,11 @@ export default function AboutMe() {
                 </div>
 
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <span className="sumi-label rounded-full border px-3.5 py-2 !text-[0.58rem]" style={{ borderColor: "var(--gold-line)", background: "rgba(var(--paper-rgb),0.6)" }}>
-                    Creative Artist
-                  </span>
-                  <span className="sumi-label rounded-full border px-3.5 py-2 !text-[0.58rem]" style={{ borderColor: "var(--gold-line)", background: "rgba(var(--paper-rgb),0.6)" }}>
-                    Frontend Developer
-                  </span>
+                  {roles.map((role) => (
+                    <span key={role} className="sumi-label rounded-full border px-3.5 py-2 !text-[0.58rem]" style={{ borderColor: "var(--gold-line)", background: "rgba(var(--paper-rgb),0.6)" }}>
+                      {role}
+                    </span>
+                  ))}
                 </div>
               </div>
 

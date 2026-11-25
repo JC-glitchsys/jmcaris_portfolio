@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { MotionConfig, motion } from "framer-motion";
 import { ArrowUpRight, ArrowDown } from "lucide-react";
 
@@ -41,6 +41,7 @@ const contactIcon =
 
 export function App() {
   const [phase, setPhase] = useState<Phase>(() => (shouldShowIntro() ? "loading" : "done"));
+  const location = useLocation();
   const ready = phase !== "loading";
 
   const revealHero = useCallback(() => {
@@ -67,7 +68,7 @@ export function App() {
       <ScrollProgress />
       <ScrollManager />
       <MusicToggle />
-      {phase === "done" && <NinjaChatbot />}
+      {phase === "done" && location.pathname === "/" && <NinjaChatbot />}
       {phase !== "done" && <SumiLoader key="sumi-loader" onReveal={revealHero} onDone={finishIntro} />}
 
       <main
@@ -94,16 +95,6 @@ export function App() {
               animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
               transition={{ duration: 0.75, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div
-                className="mb-6 inline-flex items-center gap-3 rounded-full border px-4 py-2.5"
-                style={{ borderColor: "var(--gold-line)", background: "rgba(var(--paper-rgb), 0.7)" }}
-              >
-                <span className="size-1.5 shrink-0 rotate-45" style={{ background: "var(--gold)" }} />
-                <span className="sumi-label !text-[0.6rem] !tracking-[0.16em] sm:!text-[0.64rem]">
-                  UI/UX Designer | Frontend Developer | Layout Artist
-                </span>
-              </div>
-
               <h1 className="sumi-name text-left !text-[clamp(3.5rem,7.5vw,6rem)]">
                 Jonaidah <span className="sumi-name-accent block">Caris</span>
               </h1>
@@ -115,11 +106,11 @@ export function App() {
               </p>
 
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <a href="#projects" className="sumi-btn sumi-btn-solid sumi-btn-pill">
+                <a href="#projects" className="sumi-btn sumi-btn-solid sumi-btn-pill hero-cta">
                   Explore my work <ArrowUpRight className="size-4" aria-hidden="true" />
                 </a>
 
-                <a href="#about" className="sumi-btn sumi-btn-pill sumi-btn-paper">
+                <a href="#about" className="sumi-btn sumi-btn-pill sumi-btn-paper hero-cta">
                   About me <ArrowDown className="size-4" aria-hidden="true" />
                 </a>
               </div>
@@ -169,23 +160,11 @@ export function App() {
                   Let’s make something <span className="sumi-accent">meaningful.</span>
                 </SectionHeading>
 
-                <a
-                  href="https://github.com/JC-glytchsys"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="sumi-label -mt-4 inline-flex items-center gap-3 transition-colors hover:!text-[color:var(--gold-deep)]"
-                  style={{ color: "var(--ink)" }}
-                >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.02 3.45 1.44.1-.72.4-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
-                  </svg>
-                  View GitHub profile <span aria-hidden="true">↗</span>
-                </a>
               </div>
 
               {/* Contact links */}
               <div className="mx-auto grid w-full max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                <a href="mailto:your-email@gmail.com" className={contactCard}>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=jmcarisss%40gmail.com" target="_blank" rel="noreferrer" className={contactCard}>
                   <span className={contactIcon} style={{ borderColor: "var(--gold-line)", color: "var(--gold-deep)" }}>
                     <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
                       <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -198,7 +177,7 @@ export function App() {
                   </span>
                 </a>
 
-                <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className={contactCard}>
+                <a href="https://www.linkedin.com/in/jonaidah-c-7ba2aa367?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className={contactCard}>
                   <span className={contactIcon} style={{ borderColor: "var(--gold-line)", color: "var(--gold-deep)" }}>
                     <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M5.2 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM3.5 9h3.4v11.5H3.5V9Zm5.5 0h3.3v1.6h.1a3.6 3.6 0 0 1 3.2-1.8c3.4 0 4 2.2 4 5.1v6.6h-3.4v-5.9c0-1.4 0-3.1-1.9-3.1s-2.1 1.5-2.1 3v6H9V9Z" />
@@ -210,7 +189,7 @@ export function App() {
                   </span>
                 </a>
 
-                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className={contactCard}>
+                <a href="https://www.instagram.com/jocarisss?lqvp=MW8zdHdyaWhueHp6dQ==" target="_blank" rel="noreferrer" className={contactCard}>
                   <span className={contactIcon} style={{ borderColor: "var(--gold-line)", color: "var(--gold-deep)" }}>
                     <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
                       <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -224,15 +203,15 @@ export function App() {
                   </span>
                 </a>
 
-                <a href="#home" className={contactCard}>
+                <a href="https://github.com/JC-glitchsys" target="_blank" rel="noreferrer" className={contactCard}>
                   <span className={contactIcon} style={{ borderColor: "var(--gold-line)", color: "var(--gold-deep)" }}>
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
-                      <path d="M12 3v18M3 12h18" />
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.02 3.45 1.44.1-.72.4-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
                     </svg>
                   </span>
                   <span>
-                    <span className="sumi-label block" style={{ color: "var(--ink)" }}>Back to top</span>
-                    <span className="sumi-text-sm mt-1 block">Explore the portfolio ↑</span>
+                    <span className="sumi-label block" style={{ color: "var(--ink)" }}>GitHub</span>
+                    <span className="sumi-text-sm mt-1 block">Code and projects ↗</span>
                   </span>
                 </a>
               </div>
