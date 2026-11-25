@@ -52,8 +52,10 @@ const projects: Project[] = [
 ];
 
 function ProjectCard({ project }: { project: Project }) {
-  // The first three real images of each gallery page; empty placeholder slots are skipped.
-  const previews = galleryPages[project.slug].items.filter((item) => item.image).slice(0, 3);
+  // Use the requested artwork as the three cover tiles on the main page.
+  const previews = project.slug === "visual-editorial"
+    ? ["7.3.png", "11.png", "1.4.png"].map((file) => ({ id: file, image: `gallery/visual-editorial/${file}` }))
+    : galleryPages[project.slug].items.filter((item) => item.image).slice(0, 3);
 
   return (
     <Link
@@ -71,7 +73,7 @@ function ProjectCard({ project }: { project: Project }) {
               loading="lazy"
               decoding="async"
               draggable={false}
-              style={{ objectPosition: item.focus ?? "50% 30%" }}
+              style={{ objectPosition: ("focus" in item ? item.focus : undefined) ?? "50% 30%" }}
             />
           </span>
         ))}
