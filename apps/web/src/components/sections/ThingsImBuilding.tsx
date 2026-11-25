@@ -18,6 +18,8 @@ type Project = {
   tone: Tone;
 };
 
+type ProjectPreview = { id: string; image: string; focus?: string };
+
 const projects: Project[] = [
   {
     number: "01",
@@ -53,7 +55,7 @@ const projects: Project[] = [
 
 function ProjectCard({ project }: { project: Project }) {
   // Use the requested artwork as the three cover tiles on the main page.
-  const previews = project.slug === "visual-editorial"
+  const previews: ProjectPreview[] = project.slug === "visual-editorial"
     ? ["7.3.png", "11.png", "1.4.png"].map((file) => ({ id: file, image: `gallery/visual-editorial/${file}` }))
     : galleryPages[project.slug].items.flatMap((item) => {
         const image = item.image ?? item.images?.[0]?.image;
@@ -76,7 +78,7 @@ function ProjectCard({ project }: { project: Project }) {
               loading="lazy"
               decoding="async"
               draggable={false}
-              style={{ objectPosition: ("focus" in item ? item.focus : undefined) ?? "50% 30%" }}
+              style={{ objectPosition: item.focus ?? "50% 30%" }}
             />
           </span>
         ))}
