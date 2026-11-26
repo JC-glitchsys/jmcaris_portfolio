@@ -114,7 +114,7 @@ export default function ThingsImBuilding() {
     <section id="projects" className="scroll-mt-12 pb-20 pt-10 sm:pb-24 sm:pt-14 lg:pb-28 lg:pt-16">
       <div className="mx-auto max-w-[1440px]">
         <SectionHeading
-          align="left"
+          align="center"
           eyebrow="Creative Space"
           icon={<Layers3 size={14} style={{ color: "var(--gold-deep)" }} aria-hidden="true" />}
           subtitle="Designing ideas. Building experiences. A first look at each collection."

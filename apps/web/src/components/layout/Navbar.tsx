@@ -100,7 +100,7 @@ export default function Navbar() {
           className="size-10 shrink-0 rounded-full border p-[2px] transition-transform duration-300 group-hover:scale-[1.04]"
           style={{ borderColor: "var(--gold)" }}
         >
-          <img src={asset("images/ninja-avatar.png")} alt="JM Caris" className="h-full w-full rounded-full object-cover" />
+          <img src={asset("images/profile-brown.jpg")} alt="JM Caris" className="h-full w-full rounded-full object-cover" />
         </div>
         <div className="md:hidden lg:block">
           <p className="sumi-brand text-[1.12rem]">
