@@ -85,21 +85,21 @@ function ProjectCard({ project }: { project: Project }) {
       </span>
 
       <span className="work-body">
-        <span className="sumi-label block !text-[0.58rem]" style={{ color: "var(--w-accent)" }}>
+        <span className="sumi-label block text-[0.58rem]!" style={{ color: "var(--w-accent)" }}>
           {project.number} <span aria-hidden="true">/</span> {project.eyebrow}
         </span>
         <span className="sumi-h3 mt-2 block">{project.title}</span>
-        <span className="sumi-text mt-2 block !text-[0.85rem]">{project.description}</span>
+        <span className="sumi-text mt-2 block text-[0.85rem]!">{project.description}</span>
 
         <span
           className="mt-5 flex items-center justify-between gap-4 border-t pt-4"
           style={{ borderColor: "var(--w-edge)" }}
         >
-          <span className="sumi-label !text-[0.58rem]" style={{ color: "var(--ink)" }}>
+          <span className="sumi-label text-[0.58rem]!" style={{ color: "var(--ink)" }}>
             {project.cta}
           </span>
           <span className="work-arrow" aria-hidden="true">
-            <ArrowUpRight className="size-[18px]" strokeWidth={1.6} />
+            <ArrowUpRight className="size-4.5" strokeWidth={1.6} />
           </span>
         </span>
       </span>
@@ -112,7 +112,7 @@ export default function ThingsImBuilding() {
 
   return (
     <section id="projects" className="scroll-mt-12 pb-20 pt-10 sm:pb-24 sm:pt-14 lg:pb-28 lg:pt-16">
-      <div className="mx-auto max-w-[1440px]">
+      <div className="mx-auto max-w-360">
         <SectionHeading
           align="center"
           eyebrow="Creative Space"
