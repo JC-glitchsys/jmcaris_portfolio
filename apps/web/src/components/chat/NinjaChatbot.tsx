@@ -27,7 +27,11 @@ const GREETING =
   "Konnichiwa!  I'm Kasumi, Jonaidah's little portfolio assistant. A little guide, a little helper, and your companion around this little corner of her portfolio. What can I help you with today?";
 const LOADING_TEXT = "Typing...";
 const ERROR_TEXT = "Try again..";
-const QUICK_REPLIES = ["Anong skills mo?", "Anong projects mo?", "Available ka ba for work?"];
+const QUICK_REPLIES = [
+  "What projects has Jonaidah built?",
+  "Tell me about her skills and tech stack.",
+  "How can I contact Jonaidah?",
+];
 const MAX_INPUT = 300;
 const TIMEOUT_MS = 25_000;
 const ARCHIVE_KEY = "ninja-chat-archives";
@@ -277,7 +281,7 @@ export default function NinjaChatbot() {
                 <div className="flex min-w-0 items-center gap-2.5 pr-28">
                   <div className="relative size-11 shrink-0 rounded-full bg-[#E34B36] p-[3px]">
                     <img
-                      src={asset("images/kasumi.jpg")}
+                      src={asset("images/kasumi.png")}
                       alt=""
                       width={192}
                       height={192}
@@ -396,18 +400,24 @@ export default function NinjaChatbot() {
                 )}
 
                 {showQuickReplies && (
-                  <div className="flex w-full flex-col items-stretch gap-2 pt-1" aria-label="Mabilis na tanong">
-                    {QUICK_REPLIES.map((q) => (
-                      <button
-                        key={q}
-                        type="button"
-                        onClick={() => void send(q)}
-                        className="w-full rounded-xl px-3.5 py-2 text-left text-[0.7rem] leading-snug transition-colors duration-200 hover:border-[#B8BBC2] hover:bg-[#F3F4F6] active:bg-[#ECEEF1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780] motion-reduce:transition-none"
-                        style={{ border: `1px solid ${GOLD}`, color: INK, background: "#FFFFFF" }}
-                      >
-                        {q}
-                      </button>
-                    ))}
+                  <div className="w-full rounded-2xl border border-[#E7E8EB] bg-white p-3.5" aria-label="Suggested questions">
+                    <p className="mb-2.5 px-1 text-[0.66rem] font-Regular uppercase tracking-[0.08em] text-[#777B83]">Suggested questions</p>
+                    <div className="overflow-hidden rounded-xl border border-[#E7E8EB]">
+                      {QUICK_REPLIES.map((q, index) => (
+                        <button
+                          key={q}
+                          type="button"
+                          onClick={() => void send(q)}
+                          className={`w-full px-3.5 py-2.5 text-left text-[0.7rem] leading-snug transition-colors duration-200 hover:bg-[#F3F4F6] active:bg-[#ECEEF1] focus-visible:relative focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-[#727780] motion-reduce:transition-none ${index > 0 ? "border-t border-[#E7E8EB]" : ""}`}
+                          style={{ color: INK, background: "#FFFFFF" }}
+                        >
+                          <span className="flex items-center justify-between gap-3">
+                            <span>{q}</span>
+                            <span aria-hidden="true" className="shrink-0 text-[#777B83]">&gt;</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {!isAtBottom && (
@@ -490,7 +500,7 @@ export default function NinjaChatbot() {
         }}
       >
         <img
-          src={asset("images/kasumi.jpg")}
+          src={asset("images/kasumi.png")}
           alt=""
           width={192}
           height={192}
