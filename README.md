@@ -41,7 +41,9 @@ In the Vercel project settings, add `VITE_CHAT_API_URL` as an Environment Variab
 
 ### Local development
 
-Copy `workers/gemini-chat/.dev.vars.example` to `.dev.vars`, then run:
+The frontend uses the deployed chat Worker by default, including during local development. To run a local Worker instead, copy `workers/gemini-chat/.dev.vars.example` to `workers/gemini-chat/.dev.vars` and add your Gemini API key, then set `VITE_CHAT_API_URL=http://localhost:8787` in `apps/web/.env.local`.
+
+Start the local Worker:
 
 ```bash
 npx wrangler dev

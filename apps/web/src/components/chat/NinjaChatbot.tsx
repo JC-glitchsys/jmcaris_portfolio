@@ -26,7 +26,7 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const GREETING =
   "Konnichiwa!  I'm Kasumi, Jonaidah's little portfolio assistant. A little guide, a little helper, and your companion around this little corner of her portfolio. What can I help you with today?";
 const LOADING_TEXT = "Typing...";
-const ERROR_TEXT = "Try again..";
+const ERROR_TEXT = "Kasumi couldn't reply. Please try again.";
 const QUICK_REPLIES = [
   "What projects has Jonaidah built?",
   "Tell me about her skills and tech stack.",
@@ -35,10 +35,11 @@ const QUICK_REPLIES = [
 const MAX_INPUT = 300;
 const TIMEOUT_MS = 25_000;
 const ARCHIVE_KEY = "ninja-chat-archives";
+const DEFAULT_API_URL = "https://jmcaris-gemini-chat.jmcaris-portfolio-2027.workers.dev";
 
 const API_URL: string =
   (import.meta.env.VITE_CHAT_API_URL as string | undefined)?.trim() ||
-  (import.meta.env.DEV ? "http://localhost:8787" : "https://jmcaris-gemini-chat.jmcaris-portfolio-2027.workers.dev");
+  DEFAULT_API_URL;
 
 export default function NinjaChatbot() {
   const reduce = useReducedMotion();
@@ -64,6 +65,7 @@ export default function NinjaChatbot() {
   const [confirmAction, setConfirmAction] = useState<"archive" | "delete" | null>(null);
 
   const nextId = useRef(1);
+  const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -72,10 +74,14 @@ export default function NinjaChatbot() {
   const unmounted = useRef(false);
   const pinnedToBottom = useRef(true);
 
-  // Follow new content only while the reader is already at the end of the thread.
+  // Keep the newest message and typing indicator in view as the conversation updates.
   useEffect(() => {
     const el = listRef.current;
-    if (el && pinnedToBottom.current) el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
+    if (el) {
+      pinnedToBottom.current = true;
+      setIsAtBottom(true);
+      el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
+    }
   }, [messages, loading, reduce]);
 
   const handleListScroll = () => {
@@ -100,6 +106,16 @@ export default function NinjaChatbot() {
       buttonRef.current?.focus({ preventScroll: true });
     }
     wasOpen.current = open;
+  }, [open]);
+
+  // Treat clicks on the portfolio outside the chat as a back action.
+  useEffect(() => {
+    if (!open) return;
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    return () => document.removeEventListener("pointerdown", closeOnOutsideClick);
   }, [open]);
 
   useEffect(() => {
@@ -150,15 +166,34 @@ export default function NinjaChatbot() {
           body: JSON.stringify({ messages: history }),
           signal: controller.signal,
         });
-        if (!res.ok) throw new Error(`Chat endpoint returned ${res.status}`);
-        const data = (await res.json()) as { reply?: unknown };
+        const data = (await res.json().catch(() => ({}))) as { reply?: unknown; error?: unknown };
+        if (!res.ok) {
+          const serviceError = typeof data.error === "string" ? data.error : "";
+          if (res.status === 403 || serviceError === "Origin not allowed") {
+            throw new Error("This website isn't allowed to use Kasumi's chat service.");
+          }
+          if (res.status === 500 || serviceError === "Server is not configured") {
+            throw new Error("Kasumi's chat service isn't configured yet.");
+          }
+          if (res.status === 502 || serviceError === "Upstream error" || serviceError === "Upstream unreachable") {
+            throw new Error("Kasumi couldn't reach the reply service. Please try again shortly.");
+          }
+          throw new Error(`Kasumi's chat service returned an error (${res.status}).`);
+        }
         const reply = typeof data.reply === "string" ? data.reply.trim() : "";
         if (!reply) throw new Error("Empty reply");
         setMessages((prev) => [...prev, { id: nextId.current++, role: "assistant", text: reply }]);
       } catch (err) {
         if (unmounted.current) return;
         console.warn("[NinjaChatbot]", err);
-        setMessages((prev) => [...prev, { id: nextId.current++, role: "assistant", text: ERROR_TEXT, error: true }]);
+        const message = err instanceof Error && err.name === "AbortError"
+          ? "Kasumi took too long to reply. Please try again."
+          : err instanceof TypeError
+            ? "Can't connect to Kasumi. Check your connection or chat service setup."
+            : err instanceof Error && err.message !== "Empty reply"
+              ? err.message
+              : ERROR_TEXT;
+        setMessages((prev) => [...prev, { id: nextId.current++, role: "assistant", text: message, error: true }]);
       } finally {
         window.clearTimeout(timer);
         setLoading(false);
@@ -223,7 +258,8 @@ export default function NinjaChatbot() {
 
   return (
     <div
-      className="chatbot-font fixed z-[65] flex flex-col items-end gap-3"
+      ref={rootRef}
+      className="chatbot-font fixed z-65 flex flex-col items-end gap-3"
       style={{
         right: "max(1rem, env(safe-area-inset-right))",
         bottom: "max(1rem, env(safe-area-inset-bottom))",
@@ -237,7 +273,7 @@ export default function NinjaChatbot() {
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-[72px] right-0 z-10 w-[min(260px,calc(100vw-2rem))]"
+            className="absolute bottom-18 right-0 z-10 w-[min(260px,calc(100vw-2rem))]"
           >
             <div className="relative rounded-2xl border border-[#E7E8EB] bg-white px-4 py-3 pr-9 shadow-[0_8px_24px_-14px_rgba(37,39,43,0.22)]">
               <button type="button" onClick={() => { setShowPrompt(false); setOpen(true); }} className="block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780]">
@@ -279,7 +315,7 @@ export default function NinjaChatbot() {
               {/* header */}
               <header className="relative flex items-center justify-between gap-2 px-5 py-4" style={{ borderBottom: `1px solid ${EDGE}` }}>
                 <div className="flex min-w-0 items-center gap-2.5 pr-28">
-                  <div className="relative size-11 shrink-0 rounded-full bg-[#E34B36] p-[3px]">
+                  <div className="relative size-11 shrink-0 rounded-full bg-[#E34B36] p-0.75">
                     <img
                       src={asset("images/kasumi.png")}
                       alt=""
@@ -291,11 +327,28 @@ export default function NinjaChatbot() {
                     <span aria-hidden="true" className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-white" style={{ background: "#718A72" }} />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="truncate text-[1.02rem] font-semibold leading-tight tracking-[-0.025em] text-[#202124]">
+                    <h2 className="truncate text-[1.02rem] font-semibold leading-tight tracking-tight text-[#202124]">
                       Kasumi
                     </h2>
-                    <p className="mt-1 truncate text-[0.68rem] leading-tight" style={{ color: "#777B83" }}>
-                      Portfolio assistant <span aria-hidden="true">·</span> Portfolio guide
+                    <p role="status" aria-live="polite" className="mt-1 flex items-center gap-1 truncate text-[0.68rem] leading-tight" style={{ color: "#777B83" }}>
+                      {loading ? (
+                        <>
+                          <span>Typing</span>
+                          <span aria-hidden="true" className="inline-flex items-center gap-0.5">
+                            {[0, 1, 2].map((i) => (
+                              <motion.span
+                                key={i}
+                                className="size-1 rounded-full"
+                                style={{ background: "#777B83" }}
+                                animate={reduce ? { opacity: 0.55 } : { opacity: [0.25, 0.9, 0.25] }}
+                                transition={reduce ? undefined : { duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.16 }}
+                              />
+                            ))}
+                          </span>
+                        </>
+                      ) : (
+                        <>Portfolio assistant <span aria-hidden="true">·</span> Portfolio guide</>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -354,7 +407,7 @@ export default function NinjaChatbot() {
                     className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
                   >
                     <p
-                      className="max-w-[88%] whitespace-pre-wrap break-words px-4 py-3.5 text-[0.82rem] leading-[1.65] shadow-[0_1px_2px_rgba(20,24,32,0.04)]"
+                      className="max-w-[88%] whitespace-pre-wrap wrap-break-word px-4 py-3.5 text-[0.82rem] leading-[1.65] shadow-[0_1px_2px_rgba(20,24,32,0.04)]"
                       style={
                         m.role === "user"
                           ? { background: "#25272B", color: "#FFFFFF", borderRadius: "16px 16px 4px 16px" }
@@ -471,7 +524,7 @@ export default function NinjaChatbot() {
 
               {confirmAction && (
                 <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/20 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConfirmAction(null); }}>
-                  <section role="alertdialog" aria-modal="true" aria-labelledby="chat-confirm-title" aria-describedby="chat-confirm-description" className="w-full max-w-[280px] rounded-2xl border border-[#E7E8EB] bg-white p-5 shadow-2xl">
+                  <section role="alertdialog" aria-modal="true" aria-labelledby="chat-confirm-title" aria-describedby="chat-confirm-description" className="w-full max-w-70 rounded-2xl border border-[#E7E8EB] bg-white p-5 shadow-2xl">
                     <h2 id="chat-confirm-title" className="text-sm font-semibold text-[#202124]">{confirmAction === "archive" ? "Archive this chat?" : "Delete all chat history?"}</h2>
                     <p id="chat-confirm-description" className="mt-2 text-xs leading-relaxed text-[#777B83]">{confirmAction === "archive" ? "This conversation will be saved in Archived chats and a fresh chat will start." : "This removes this conversation and all archived chats from this browser. This cannot be undone."}</p>
                     <div className="mt-5 flex justify-end gap-2">
@@ -494,7 +547,7 @@ export default function NinjaChatbot() {
         aria-label={open ? "Isara ang chat" : "Buksan ang chat with Kasumi"}
         aria-expanded={open}
         aria-controls={panelId}
-        className="group relative size-[60px] overflow-hidden rounded-full border-[3px] border-[#E34B36] bg-white p-[3px] transition-[box-shadow,border-color] duration-300 ease-out hover:shadow-[0_12px_26px_-10px_rgba(26,26,26,0.55)] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#C9A96A] motion-reduce:transition-none"
+        className="group relative size-15 overflow-hidden rounded-full border-[3px] border-[#E34B36] bg-white p-0.75 transition-[box-shadow,border-color] duration-300 ease-out hover:shadow-[0_12px_26px_-10px_rgba(26,26,26,0.55)] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#C9A96A] motion-reduce:transition-none"
         style={{
           boxShadow: "0 8px 20px -10px rgba(26,26,26,0.5)",
         }}
@@ -509,7 +562,7 @@ export default function NinjaChatbot() {
         />
         <span
           aria-hidden="true"
-          className="absolute inset-[3px] flex items-center justify-center rounded-full text-[1.1rem] transition-opacity duration-300 motion-reduce:transition-none"
+          className="absolute inset-0.75 flex items-center justify-center rounded-full text-[1.1rem] transition-opacity duration-300 motion-reduce:transition-none"
           style={{ background: INK, color: GOLD, opacity: open ? 1 : 0 }}
         >
           ✕
