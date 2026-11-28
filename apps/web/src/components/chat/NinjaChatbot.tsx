@@ -5,7 +5,7 @@ import { Archive, ArrowDown, ArrowUp, History as HistoryIcon, Plus, Trash2 } fro
 import { asset } from "../sumi/hooks";
 
 /**
- * Ninja Girl Assistant: a small floating chat for the portfolio.
+ * Kasumi: a small floating chat for the portfolio.
  * The browser only talks to our own serverless endpoint (VITE_CHAT_API_URL). The Gemini key
  * and the knowledge base live in that endpoint (see /workers/gemini-chat), never in this bundle.
  *
@@ -24,10 +24,14 @@ const EDGE = "#E7E8EB";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const GREETING =
-  "Hi I'm Ninja Girl Assistant of Jonaidah. Ask about her skills, projects, or her availability.";
+  "Konnichiwa!  I'm Kasumi, Jonaidah's little portfolio assistant. A little guide, a little helper, and your companion around this little corner of her portfolio. What can I help you with today?";
 const LOADING_TEXT = "Typing...";
 const ERROR_TEXT = "Try again..";
-const QUICK_REPLIES = ["Anong skills mo?", "Anong projects mo?", "Available ka ba for work?"];
+const QUICK_REPLIES = [
+  "What projects has Jonaidah built?",
+  "Tell me about her skills and tech stack.",
+  "How can I contact Jonaidah?",
+];
 const MAX_INPUT = 300;
 const TIMEOUT_MS = 25_000;
 const ARCHIVE_KEY = "ninja-chat-archives";
@@ -250,7 +254,7 @@ export default function NinjaChatbot() {
             key="panel"
             id={panelId}
             role="dialog"
-            aria-label="Ninja Girl Assistant"
+            aria-label="Kasumi"
             initial={panelHidden}
             animate={panelShown}
             exit={panelHidden}
@@ -275,9 +279,9 @@ export default function NinjaChatbot() {
               {/* header */}
               <header className="relative flex items-center justify-between gap-2 px-5 py-4" style={{ borderBottom: `1px solid ${EDGE}` }}>
                 <div className="flex min-w-0 items-center gap-2.5 pr-28">
-                  <div className="relative size-11 shrink-0 rounded-full p-[2px]" style={{ background: "linear-gradient(145deg, #D8DADF, #F1E5C9)" }}>
+                  <div className="relative size-11 shrink-0 rounded-full bg-[#E34B36] p-[3px]">
                     <img
-                      src={asset("images/profile-brown.jpg")}
+                      src={asset("images/kasumi.png")}
                       alt=""
                       width={192}
                       height={192}
@@ -288,10 +292,10 @@ export default function NinjaChatbot() {
                   </div>
                   <div className="min-w-0">
                     <h2 className="truncate text-[1.02rem] font-semibold leading-tight tracking-[-0.025em] text-[#202124]">
-                      Jonaidah Caris
+                      Kasumi
                     </h2>
                     <p className="mt-1 truncate text-[0.68rem] leading-tight" style={{ color: "#777B83" }}>
-                      Ninja Girl Assistant <span aria-hidden="true">·</span> Portfolio guide
+                      Portfolio assistant <span aria-hidden="true">·</span> Portfolio guide
                     </p>
                   </div>
                 </div>
@@ -396,18 +400,24 @@ export default function NinjaChatbot() {
                 )}
 
                 {showQuickReplies && (
-                  <div className="flex flex-wrap gap-2 pt-1" aria-label="Mabilis na tanong">
-                    {QUICK_REPLIES.map((q) => (
-                      <button
-                        key={q}
-                        type="button"
-                        onClick={() => void send(q)}
-                        className="rounded-full px-3.5 py-1.5 text-[0.7rem] leading-snug transition-colors duration-200 hover:border-[#B8BBC2] hover:bg-[#F3F4F6] active:bg-[#ECEEF1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#727780] motion-reduce:transition-none"
-                        style={{ border: `1px solid ${GOLD}`, color: INK, background: "#FFFFFF" }}
-                      >
-                        {q}
-                      </button>
-                    ))}
+                  <div className="w-full rounded-2xl border border-[#E7E8EB] bg-white p-3.5" aria-label="Suggested questions">
+                    <p className="mb-2.5 px-1 text-[0.66rem] font-Regular uppercase tracking-[0.08em] text-[#777B83]">Suggested questions</p>
+                    <div className="overflow-hidden rounded-xl border border-[#E7E8EB]">
+                      {QUICK_REPLIES.map((q, index) => (
+                        <button
+                          key={q}
+                          type="button"
+                          onClick={() => void send(q)}
+                          className={`w-full px-3.5 py-2.5 text-left text-[0.7rem] leading-snug transition-colors duration-200 hover:bg-[#F3F4F6] active:bg-[#ECEEF1] focus-visible:relative focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-[#727780] motion-reduce:transition-none ${index > 0 ? "border-t border-[#E7E8EB]" : ""}`}
+                          style={{ color: INK, background: "#FFFFFF" }}
+                        >
+                          <span className="flex items-center justify-between gap-3">
+                            <span>{q}</span>
+                            <span aria-hidden="true" className="shrink-0 text-[#777B83]">&gt;</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {!isAtBottom && (
@@ -476,29 +486,26 @@ export default function NinjaChatbot() {
         )}
       </AnimatePresence>
 
-      {/* floating button: her portrait in an ink ring; no bobbing, no scaling, only a calm change of ring and shadow */}
+      {/* Kasumi's portrait in a solid red-orange ring with a white inset gap. */}
       <button
         ref={buttonRef}
         type="button"
         onClick={() => { setShowPrompt(false); setOpen((v) => !v); }}
-        aria-label={open ? "Isara ang chat" : "Buksan ang chat with Ninja Girl Assistant"}
+        aria-label={open ? "Isara ang chat" : "Buksan ang chat with Kasumi"}
         aria-expanded={open}
         aria-controls={panelId}
-        className="group relative size-[60px] overflow-hidden rounded-full transition-[box-shadow,border-color] duration-300 ease-out hover:border-[#8A6B28] hover:shadow-[0_12px_26px_-10px_rgba(26,26,26,0.55)] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#C9A96A] motion-reduce:transition-none"
+        className="group relative size-[60px] overflow-hidden rounded-full border-[3px] border-[#E34B36] bg-white p-[3px] transition-[box-shadow,border-color] duration-300 ease-out hover:shadow-[0_12px_26px_-10px_rgba(26,26,26,0.55)] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#C9A96A] motion-reduce:transition-none"
         style={{
-          background: PAPER,
-          border: `1px solid ${GOLD}`,
           boxShadow: "0 8px 20px -10px rgba(26,26,26,0.5)",
-          padding: "3px",
         }}
       >
         <img
-          src={asset("images/profile-brown.jpg")}
+          src={asset("images/kasumi.png")}
           alt=""
           width={192}
           height={192}
           draggable={false}
-          className="size-full select-none rounded-full object-cover"
+          className="size-full select-none rounded-full border-2 border-white object-cover"
         />
         <span
           aria-hidden="true"

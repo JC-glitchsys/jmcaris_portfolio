@@ -11,17 +11,12 @@ type ContactLink = {
   icon: ReactNode;
 };
 
-/*
-  TODO before publishing: these three links are still the original placeholders
-  (your-email@gmail.com and the LinkedIn / Instagram home pages).
-  Replace them with your real email address and profile URLs.
-*/
 const contactLinks: ContactLink[] = [
   {
     label: "Email / Gmail",
     note: "Send me a message",
-    href: "mailto:your-email@gmail.com",
-    external: false,
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=jmcarisss%40gmail.com",
+    external: true,
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
         <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -32,7 +27,7 @@ const contactLinks: ContactLink[] = [
   {
     label: "LinkedIn",
     note: "Professional profile",
-    href: "https://www.linkedin.com/",
+    href: "https://www.linkedin.com/in/jonaidah-c-7ba2aa367?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     external: true,
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -43,13 +38,24 @@ const contactLinks: ContactLink[] = [
   {
     label: "Instagram",
     note: "Social / creative work",
-    href: "https://www.instagram.com/",
+    href: "https://www.instagram.com/jocarisss?lqvp=MW8zdHdyaWhueHp6dQ==",
     external: true,
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
         <rect x="3" y="3" width="18" height="18" rx="5" />
         <circle cx="12" cy="12" r="4" />
         <circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    label: "GitHub",
+    note: "Code and projects",
+    href: "https://github.com/JC-glitchsys",
+    external: true,
+    icon: (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.02 3.45 1.44.1-.72.4-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
       </svg>
     ),
   },
@@ -101,22 +107,6 @@ export default function Contact() {
           </li>
         ))}
       </ul>
-
-      <div className="mt-6 text-center">
-        <a
-          href="https://github.com/JC-glytchsys"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 underline decoration-sky-200 decoration-2 underline-offset-4 transition-colors hover:text-sky-700 hover:decoration-sky-600"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.76 2.02 3.45 1.44.1-.72.4-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
-          </svg>
-          View GitHub profile
-          <span className="sr-only"> (opens in a new tab)</span>
-          <ArrowUpRight className="size-4" aria-hidden="true" />
-        </a>
-      </div>
 
       {/* Footer bottom */}
       <div className="mt-14 flex flex-col justify-between gap-4 border-t border-slate-100 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-6">

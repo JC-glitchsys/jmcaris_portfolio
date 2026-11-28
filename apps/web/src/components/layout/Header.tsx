@@ -46,7 +46,7 @@ export default function Header({ isDarkMode, onToggleTheme, prefix = "" }: Heade
             />
           </div>
           <div>
-            <p className="text-base font-semibold tracking-tight">
+            <p className="text-xs font-semibold tracking-tight">
               jmcaris<span className="text-sky-100">.dev</span>
             </p>
             <p className="mt-0.5 text-xs font-medium text-white/85">Developer & Creative</p>

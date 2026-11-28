@@ -277,6 +277,18 @@ img {
 .sumi-btn-solid:hover {
   background: var(--ink-soft);
 }
+.sumi-btn-live {
+  border-color: transparent;
+  color: #ffffff;
+  background: linear-gradient(135deg, #e05232 0%, var(--sun) 100%);
+  box-shadow: 0 3px 10px -7px rgba(200, 58, 46, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.sumi-btn-live:hover {
+  border-color: transparent;
+  color: #ffffff;
+  background: linear-gradient(135deg, #d7492a 0%, var(--sun) 100%);
+  box-shadow: 0 8px 20px -12px rgba(200, 58, 46, 0.55);
+}
 /* Contact Me: richer, slightly darker muted gold; white text in light mode */
 .sumi-btn-gold {
   background: #8f6f2a;
@@ -322,6 +334,14 @@ img {
 .sumi-btn-pill.sumi-btn-paper:hover {
   background: rgba(var(--paper-rgb), 0.96);
   border-color: var(--gold-deep);
+}
+.hero-cta {
+  border: none;
+  font-family: "Poppins", system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
 }
 
 /* Inputs: soft, rounded, clear gold focus (red only for real validation errors) */
@@ -597,6 +617,16 @@ img {
   --w-frame: #cfdceb;
   --w-accent: #44698f;
 }
+.work-card[data-tone="orange"] {
+  --w-body: #f3e1dc;
+  --w-front: #fbf1ee;
+  --w-edge: rgba(184, 82, 58, 0.3);
+  --w-frame: #ead1c9;
+  --w-accent: #c34b32;
+}
+.work-card-frontend {
+  box-shadow: 0 3px 8px -5px var(--shadow-ink), 0 14px 30px -20px var(--shadow-ink);
+}
 :root.dark .work-card {
   --w-body: #2a271f;
   --w-front: #221f19;
@@ -618,6 +648,13 @@ img {
   --w-frame: #2e3b4a;
   --w-accent: #9fbcdc;
 }
+:root.dark .work-card[data-tone="orange"] {
+  --w-body: #352522;
+  --w-front: #2a201e;
+  --w-edge: rgba(230, 115, 86, 0.28);
+  --w-frame: #48302b;
+  --w-accent: #f08a70;
+}
 
 /* three previews: one large tile on the left, two stacked on the right */
 .work-previews {
@@ -626,6 +663,13 @@ img {
   grid-template-rows: 1fr 1fr;
   gap: 8px;
   height: 208px;
+}
+.work-previews-four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.work-previews-four .work-tile:first-child {
+  grid-row: auto;
 }
 .work-tile {
   position: relative;
